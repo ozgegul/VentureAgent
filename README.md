@@ -74,3 +74,7 @@ VentureAgent
 
 # Sprint 3
 
+
+---
+
+❗️ Bu proje Yapay Zeka ve Teknoloji Akademisi bootcamp süreci için oluşturulmuştur. 
