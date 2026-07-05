@@ -13,7 +13,7 @@ The Innovators
 - Özge Gül — Product Owner
 - Haticenur Yalman
 - Ayşenur KADİM-Scrum Master
-- ...
+- Hakkı Kondak 
 - ...
 
 ## Product Name
