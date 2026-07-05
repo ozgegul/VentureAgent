@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Yatırımcı Bulma — Startup Co-Founder AI{% endblock %}
+
+{% block content %}
+    <span class="eyebrow">Adım 07</span>
+    <h1>Yatırımcı Bulma Tavsiyeleri</h1>
+    <p class="subtitle">Aşamana ve ihtiyacına uygun yatırımcı bulma stratejisi al.</p>
+
+    {% if error %}<p class="error">{{ error }}</p>{% endif %}
+
+    <form method="POST" action="{{ url_for('investors.advise_investors') }}" class="form">
+        <label for="idea">Fikrin nedir?</label>
+        <textarea id="idea" name="idea" rows="3" required></textarea>
+
+        <label for="stage">Aşama (opsiyonel)</label>
+        <select id="stage" name="stage">
+            <option value="">Seçiniz</option>
+            <option value="fikir aşaması">Fikir aşaması</option>
+            <option value="pre-seed">Pre-seed</option>
+            <option value="seed">Seed</option>
+            <option value="büyüme">Büyüme</option>
+        </select>
+
+        <label for="amount">Aranan yatırım tutarı (opsiyonel)</label>
+        <input type="text" id="amount" name="amount">
+
+        <label for="geography">Coğrafya (opsiyonel)</label>
+        <input type="text" id="geography" name="geography" placeholder="örn. Türkiye, Avrupa">
+
+        <button type="submit">Tavsiye Al</button>
+    </form>
+
+    {% if advice %}
+        <div class="result">
+            <pre>{{ advice }}</pre>
+        </div>
+    {% endif %}
+{% endblock %}

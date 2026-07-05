@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Startup Co-Founder AI{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{{ url_for('main.index') }}" class="brand">Startup Co-Founder AI</a>
+        <div class="nav-links">
+            <a href="{{ url_for('chat.chat_page') }}">Sohbet</a>
+            <a href="{{ url_for('idea.idea_form') }}">Fikir Analizi</a>
+            <a href="{{ url_for('swot.swot_form') }}">SWOT</a>
+            <a href="{{ url_for('competitors.competitors_form') }}">Rakipler</a>
+            <a href="{{ url_for('revenue.revenue_form') }}">Gelir Modeli</a>
+            <a href="{{ url_for('roadmap.roadmap_form') }}">Roadmap</a>
+            <a href="{{ url_for('kanban.kanban_form') }}">Kanban</a>
+            <a href="{{ url_for('investors.investors_form') }}">Yatırımcı</a>
+            <a href="{{ url_for('pitch.pitch_form') }}">Pitch</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

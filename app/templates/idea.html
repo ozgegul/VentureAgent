@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Fikir Analizi — Startup Co-Founder AI{% endblock %}
+
+{% block content %}
+    <h1>Fikir Analizi</h1>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('idea.analyze_idea') }}" class="form">
+        <label for="idea">Fikrin nedir?</label>
+        <textarea id="idea" name="idea" rows="3" required></textarea>
+
+        <label for="problem">Hangi problemi çözüyor?</label>
+        <textarea id="problem" name="problem" rows="3" required></textarea>
+
+        <label for="target_audience">Hedef kitle (opsiyonel)</label>
+        <input type="text" id="target_audience" name="target_audience">
+
+        <label for="sector">Sektör (opsiyonel)</label>
+        <input type="text" id="sector" name="sector">
+
+        <button type="submit">Analiz Et</button>
+    </form>
+
+    {% if analysis %}
+        <div class="result">
+            <h2>Analiz Sonucu</h2>
+            <pre>{{ analysis }}</pre>
+        </div>
+    {% endif %}
+{% endblock %}

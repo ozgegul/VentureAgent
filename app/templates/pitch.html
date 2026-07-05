@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Pitch Hazırlama — Startup Co-Founder AI{% endblock %}
+
+{% block content %}
+    <span class="eyebrow">Adım 08</span>
+    <h1>Pitch Hazırlama</h1>
+    <p class="subtitle">Asansör konuşması veya yatırımcı sunum taslağı oluştur.</p>
+
+    {% if error %}<p class="error">{{ error }}</p>{% endif %}
+
+    <form method="POST" action="{{ url_for('pitch.generate_pitch') }}" class="form">
+        <label for="idea">Fikrin nedir?</label>
+        <textarea id="idea" name="idea" rows="3" required></textarea>
+
+        <label>Ne oluşturmak istiyorsun?</label>
+        <div class="radio-group">
+            <label><input type="radio" name="pitch_type" value="elevator" checked> Asansör Konuşması</label>
+            <label><input type="radio" name="pitch_type" value="deck"> Sunum (Pitch Deck) Taslağı</label>
+        </div>
+
+        <label for="traction">Mevcut traction/kanıt varsa yaz (opsiyonel, sadece sunum için)</label>
+        <input type="text" id="traction" name="traction" placeholder="örn. 500 kullanıcı, 10.000 TL aylık gelir">
+
+        <button type="submit">Oluştur</button>
+    </form>
+
+    {% if elevator %}
+        <div class="result">
+            <h2>Asansör Konuşman</h2>
+            <p>{{ elevator }}</p>
+        </div>
+    {% endif %}
+
+    {% if slides %}
+        <div class="result">
+            <h2>Sunum Taslağı</h2>
+            <ul class="roadmap-list">
+                {% for slide in slides %}
+                    <li class="roadmap-item">
+                        <span class="roadmap-phase">{{ loop.index }}</span>
+                        <div style="flex: 1;">
+                            <h4>{{ slide.title }}</h4>
+                            <p>{{ slide.content }}</p>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+{% endblock %}

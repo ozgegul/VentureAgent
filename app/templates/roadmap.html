@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}MVP Roadmap — Startup Co-Founder AI{% endblock %}
+
+{% block content %}
+    <span class="eyebrow">Adım 05</span>
+    <h1>MVP Roadmap</h1>
+    <p class="subtitle">İlk ürününü çıkarmak için adım adım plan oluştur.</p>
+
+    {% if error %}<p class="error">{{ error }}</p>{% endif %}
+
+    <form method="POST" action="{{ url_for('roadmap.generate_roadmap') }}" class="form">
+        <label for="idea">Fikrin nedir?</label>
+        <textarea id="idea" name="idea" rows="3" required></textarea>
+
+        <label for="tech_capacity">Teknik kapasiten nedir? (opsiyonel)</label>
+        <input type="text" id="tech_capacity" name="tech_capacity" placeholder="örn. tek kişi, kod yazabiliyorum">
+
+        <label for="budget">Bütçen nedir? (opsiyonel)</label>
+        <input type="text" id="budget" name="budget">
+
+        <button type="submit">Roadmap Oluştur</button>
+    </form>
+
+    {% if result %}
+        <ul class="roadmap-list">
+            {% for item in result.items %}
+                <li class="roadmap-item">
+                    <span class="roadmap-phase">{{ item.phase }}</span>
+                    <div style="flex: 1;">
+                        <h4>{{ item.title }}</h4>
+                        <p>{{ item.description }}</p>
+                    </div>
+                    <span class="roadmap-weeks">{{ item.estimated_weeks }} hafta</span>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

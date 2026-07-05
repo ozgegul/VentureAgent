@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Gelir Modeli — Startup Co-Founder AI{% endblock %}
+
+{% block content %}
+    <span class="eyebrow">Adım 04</span>
+    <h1>Gelir Modeli Önerisi</h1>
+    <p class="subtitle">Fikrine uygun gelir modellerini karşılaştır.</p>
+
+    {% if error %}<p class="error">{{ error }}</p>{% endif %}
+
+    <form method="POST" action="{{ url_for('revenue.analyze_revenue') }}" class="form">
+        <label for="idea">Fikrin nedir?</label>
+        <textarea id="idea" name="idea" rows="3" required></textarea>
+
+        <label for="target_audience">Hedef kitle (opsiyonel)</label>
+        <input type="text" id="target_audience" name="target_audience">
+
+        <label for="pricing_preference">Fiyatlandırma tercihin var mı? (opsiyonel)</label>
+        <input type="text" id="pricing_preference" name="pricing_preference" placeholder="örn. abonelik, tek seferlik">
+
+        <button type="submit">Gelir Modeli Öner</button>
+    </form>
+
+    {% if result %}
+        <div class="result">
+            {% for m in result.models %}
+                <div style="margin-bottom: 1.2rem;">
+                    <h3 style="margin-bottom: 0.2rem;">{{ m.name }}</h3>
+                    <p class="note" style="margin: 0 0 0.4rem;">{{ m.description }}</p>
+                    <p style="margin: 0; font-size: 0.87rem;"><strong>Artılar:</strong> {{ m.pros | join(", ") }}</p>
+                    <p style="margin: 0; font-size: 0.87rem;"><strong>Eksiler:</strong> {{ m.cons | join(", ") }}</p>
+                </div>
+            {% endfor %}
+            <h2>Önerilen</h2>
+            <p>{{ result.recommended }}</p>
+        </div>
+    {% endif %}
+{% endblock %}

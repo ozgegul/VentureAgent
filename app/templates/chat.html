@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Sohbet — Startup Co-Founder AI{% endblock %}
+
+{% block content %}
+    <span class="eyebrow">Serbest sohbet</span>
+    <h1>Fikrini anlat, birlikte geliştirelim</h1>
+    <p class="subtitle">
+        Pazar araştırması iste, TR ve yurtdışı karşılaştırması yaptır, fikrini
+        büyütmek için fikir al. Yapılandırılmış çıktı istersen
+        (SWOT, roadmap, pitch vb.) ilgili modüle de yönlendirebilirim.
+    </p>
+
+    <div id="chat-window">
+        <div id="chat-messages">
+            {% for msg in history %}
+                <div class="chat-bubble chat-{{ msg.role }}">{{ msg.content }}</div>
+            {% endfor %}
+        </div>
+
+        <div id="chat-input-row">
+            <textarea id="chat-input" rows="2" placeholder="örn. Öğrenciler için bir ikinci el kitap platformu fikrim var, TR ve ABD pazarını karşılaştırır mısın?"></textarea>
+            <button id="chat-send">Gönder</button>
+        </div>
+        <button id="chat-reset" type="button">Sohbeti sıfırla</button>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+{% endblock %}

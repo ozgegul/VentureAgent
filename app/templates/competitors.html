@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Rakip Araştırması — Startup Co-Founder AI{% endblock %}
+
+{% block content %}
+    <span class="eyebrow">Adım 03</span>
+    <h1>Rakip Araştırması</h1>
+    <p class="subtitle">Sektöründeki olası rakipleri ve konumlandırma önerini gör.</p>
+
+    {% if error %}<p class="error">{{ error }}</p>{% endif %}
+
+    <form method="POST" action="{{ url_for('competitors.analyze_competitors') }}" class="form">
+        <label for="idea">Fikrin nedir?</label>
+        <textarea id="idea" name="idea" rows="3" required></textarea>
+
+        <label for="sector">Sektör (opsiyonel)</label>
+        <input type="text" id="sector" name="sector">
+
+        <label for="region">Pazar bölgesi (opsiyonel, örn. Türkiye, Global)</label>
+        <input type="text" id="region" name="region">
+
+        <button type="submit">Rakipleri Araştır</button>
+    </form>
+
+    {% if result %}
+        <div class="result">
+            <h2>Olası Rakipler</h2>
+            {% for c in result.competitors %}
+                <div style="margin-bottom: 1.2rem;">
+                    <h3 style="margin-bottom: 0.2rem;">{{ c.name }}</h3>
+                    <p class="note" style="margin: 0 0 0.4rem;">{{ c.description }}</p>
+                    <p style="margin: 0; font-size: 0.87rem;"><strong>Güçlü:</strong> {{ c.strengths | join(", ") }}</p>
+                    <p style="margin: 0; font-size: 0.87rem;"><strong>Zayıf:</strong> {{ c.weaknesses | join(", ") }}</p>
+                </div>
+            {% endfor %}
+            <h2>Konumlandırma Önerisi</h2>
+            <p>{{ result.positioning_advice }}</p>
+        </div>
+    {% endif %}
+{% endblock %}

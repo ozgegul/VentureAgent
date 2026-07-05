@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}SWOT Analizi — Startup Co-Founder AI{% endblock %}
+
+{% block content %}
+    <span class="eyebrow">Adım 02</span>
+    <h1>SWOT Analizi</h1>
+    <p class="subtitle">Fikrinin güçlü/zayıf yönlerini, fırsat ve tehditlerini gör.</p>
+
+    {% if error %}<p class="error">{{ error }}</p>{% endif %}
+
+    <form method="POST" action="{{ url_for('swot.analyze_swot') }}" class="form">
+        <label for="idea">Fikrin nedir?</label>
+        <textarea id="idea" name="idea" rows="3" required></textarea>
+
+        <label for="sector">Sektör (opsiyonel)</label>
+        <input type="text" id="sector" name="sector">
+
+        <button type="submit">SWOT Çıkar</button>
+    </form>
+
+    {% if swot %}
+        <div class="swot-grid">
+            <div class="swot-cell swot-strengths">
+                <h3>Güçlü Yönler</h3>
+                <ul>{% for item in swot.strengths %}<li>{{ item }}</li>{% endfor %}</ul>
+            </div>
+            <div class="swot-cell swot-weaknesses">
+                <h3>Zayıf Yönler</h3>
+                <ul>{% for item in swot.weaknesses %}<li>{{ item }}</li>{% endfor %}</ul>
+            </div>
+            <div class="swot-cell swot-opportunities">
+                <h3>Fırsatlar</h3>
+                <ul>{% for item in swot.opportunities %}<li>{{ item }}</li>{% endfor %}</ul>
+            </div>
+            <div class="swot-cell swot-threats">
+                <h3>Tehditler</h3>
+                <ul>{% for item in swot.threats %}<li>{{ item }}</li>{% endfor %}</ul>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
