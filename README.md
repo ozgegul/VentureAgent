@@ -53,7 +53,7 @@ Girişimcilerin ve girişimci adaylarının girişim fikirlerini doğrulayabilec
 
 ## Product Backlog URL
 
-https://app.notion.com/p/Kanvas-Haz-rlanmas-3907f1e5cdc2805ea33aca3e73b8d6fa?source=copy_link
+https://app.notion.com/p/38d7f1e5cdc28080ad7ed1349d2fba38?v=38d7f1e5cdc280529c91000c00dd6be6&source=copy_link
 ...
 
 ---
