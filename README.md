@@ -10,9 +10,9 @@ The Innovators
 
 ## Team Members
 
-- Özge Gül — Product Owner
-- Haticenur Yalman
-- Ayşenur KADİM-Scrum Master
+- Özge Gül — Product Owner [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ozgegul)
+- Haticenur Yalman [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/haticenuryalman)
+- Ayşenur KADİM-Scrum Master [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/aysenurkadim)
 - Hakkı Kondak [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/hakkik)
 - ...
 
