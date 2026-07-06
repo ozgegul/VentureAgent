@@ -13,7 +13,7 @@ The Innovators
 - Özge Gül — Product Owner
 - Haticenur Yalman
 - Ayşenur KADİM-Scrum Master
-- Hakkı Kondak 
+- Hakkı Kondak [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/hakkik)
 - ...
 
 ## Product Name
