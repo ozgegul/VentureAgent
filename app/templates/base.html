@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Startup Co-Founder AI{% endblock %}</title>
+    <title>{% block title %}VentureAgent{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <nav class="navbar">
-        <a href="{{ url_for('main.index') }}" class="brand">Startup Co-Founder AI</a>
+        <a href="{{ url_for('main.index') }}" class="brand">VentureAgent</a>
         <div class="nav-links">
             <a href="{{ url_for('chat.chat_page') }}">Sohbet</a>
             <a href="{{ url_for('idea.idea_form') }}">Fikir Analizi</a>

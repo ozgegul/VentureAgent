@@ -1,4 +1,4 @@
-// Startup Co-Founder AI - sohbet arayüzü mantığı
+// VentureAgent - sohbet arayüzü mantığı
 
 const messagesEl = document.getElementById("chat-messages");
 const inputEl = document.getElementById("chat-input");

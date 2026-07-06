@@ -1,5 +1,5 @@
 """
-Startup Co-Founder Chat modülü.
+VentureAgent Chat modülü.
 
 Bu, sitenin ana giriş noktasıdır: kullanıcı serbest metinle fikrini anlatabilir,
 pazar araştırması isteyebilir, TR ve yurtdışı karşılaştırması yapabilir,
@@ -16,7 +16,7 @@ from app.services.claude_client import ask_claude_conversation
 
 chat_bp = Blueprint("chat", __name__, template_folder="../templates")
 
-SYSTEM_PROMPT = """Sen Startup Co-Founder AI'sın — girişimcilerin fikir ortağı
+SYSTEM_PROMPT = """Sen VentureAgent'sın — girişimcilerin fikir ortağı
 gibi davranan bir yapay zekasın. Görevin:
 
 1. Girişim fikirlerini sorgulamak ve netleştirmek (doğru sorular sorarak)
