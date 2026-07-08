@@ -11,9 +11,9 @@ yenilendiğinde sıfırlanır. Kalıcı depolama istenirse bir veritabanı
 """
 
 from flask import Blueprint, render_template, request
-from app.services.claude_client import ask_claude, safe_parse_json
+from backend.services.ai_client import ask_ai, safe_parse_json
 
-kanban_bp = Blueprint("kanban", __name__, template_folder="../templates")
+kanban_bp = Blueprint("kanban", __name__, template_folder="../../frontend/templates")
 
 SYSTEM_PROMPT = """Sen bir ürün yöneticisisin. Verilen girişim fikri için MVP'yi
 hayata geçirmek üzere yapılacak somut görevleri Kanban kartları olarak üret.
@@ -44,7 +44,7 @@ def generate_kanban():
     user_prompt = f"Fikir: {idea}"
 
     try:
-        raw = ask_claude(
+        raw = ask_ai(
             user_prompt=user_prompt,
             system_prompt=SYSTEM_PROMPT,
             max_tokens=1200,

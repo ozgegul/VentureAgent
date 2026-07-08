@@ -12,9 +12,9 @@ yapı için ileride veritabanına taşınabilir.
 """
 
 from flask import Blueprint, render_template, request, jsonify, session
-from app.services.claude_client import ask_claude_conversation
+from backend.services.ai_client import ask_ai_conversation
 
-chat_bp = Blueprint("chat", __name__, template_folder="../templates")
+chat_bp = Blueprint("chat", __name__, template_folder="../../frontend/templates")
 
 SYSTEM_PROMPT = """Sen VentureAgent'sın — girişimcilerin fikir ortağı
 gibi davranan bir yapay zekasın. Görevin:
@@ -51,7 +51,7 @@ def send_message():
     history.append({"role": "user", "content": user_message})
 
     try:
-        reply = ask_claude_conversation(
+        reply = ask_ai_conversation(
             messages=history,
             system_prompt=SYSTEM_PROMPT,
             max_tokens=1200,

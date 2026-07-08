@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Fikir Analizi — VentureAgent{% endblock %}
+
+{% block content %}
+    <h1>Fikir Analizi</h1>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('idea.analyze_idea') }}" class="form">
+        <label for="idea">Fikrin nedir?</label>
+        <textarea id="idea" name="idea" rows="3" required></textarea>
+
+        <label for="problem">Hangi problemi çözüyor?</label>
+        <textarea id="problem" name="problem" rows="3" required></textarea>
+
+        <label for="target_audience">Hedef kitle (opsiyonel)</label>
+        <input type="text" id="target_audience" name="target_audience">
+
+        <label for="sector">Sektör (opsiyonel)</label>
+        <input type="text" id="sector" name="sector">
+
+        <div class="section-divider">Data Science Sinyalleri</div>
+
+        <div class="score-input-grid">
+            <label for="problem_severity">
+                Problem aciliyeti
+                <select id="problem_severity" name="problem_severity">
+                    <option value="1">1 - Düşük</option>
+                    <option value="2">2</option>
+                    <option value="3" selected>3 - Orta</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Çok yüksek</option>
+                </select>
+            </label>
+
+            <label for="target_audience_clarity">
+                Hedef kitle netliği
+                <select id="target_audience_clarity" name="target_audience_clarity">
+                    <option value="1">1 - Belirsiz</option>
+                    <option value="2">2</option>
+                    <option value="3" selected>3 - Orta</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Çok net</option>
+                </select>
+            </label>
+
+            <label for="competition_intensity">
+                Rekabet yoğunluğu
+                <select id="competition_intensity" name="competition_intensity">
+                    <option value="1">1 - Düşük</option>
+                    <option value="2">2</option>
+                    <option value="3" selected>3 - Orta</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Çok yoğun</option>
+                </select>
+            </label>
+
+            <label for="monetization_clarity">
+                Gelir modeli netliği
+                <select id="monetization_clarity" name="monetization_clarity">
+                    <option value="1">1 - Belirsiz</option>
+                    <option value="2">2</option>
+                    <option value="3" selected>3 - Orta</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Çok net</option>
+                </select>
+            </label>
+        </div>
+
+        <button type="submit">Analiz Et</button>
+    </form>
+
+    {% if venture_score %}
+        <section class="venture-score-card">
+            <div class="venture-score-main">
+                <span class="score-label">Venture Score</span>
+                <strong>{{ venture_score.score }}</strong>
+                <span class="score-caption">{{ venture_score.readiness_label }}</span>
+            </div>
+            <div class="venture-score-detail">
+                <span class="risk-pill">{{ venture_score.risk_level }}</span>
+                <h2>Data science yorumu</h2>
+                <ul>
+                    {% for recommendation in venture_score.recommendations %}
+                        <li>{{ recommendation }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+    {% endif %}
+
+    {% if analysis %}
+        <div class="result">
+            <h2>Analiz Sonucu</h2>
+            <pre>{{ analysis }}</pre>
+        </div>
+    {% endif %}
+{% endblock %}

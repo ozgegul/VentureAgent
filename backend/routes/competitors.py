@@ -8,9 +8,9 @@ entegre edilmesi önerilir — bkz. README.
 """
 
 from flask import Blueprint, render_template, request
-from app.services.claude_client import ask_claude, safe_parse_json
+from backend.services.ai_client import ask_ai, safe_parse_json
 
-competitors_bp = Blueprint("competitors", __name__, template_folder="../templates")
+competitors_bp = Blueprint("competitors", __name__, template_folder="../../frontend/templates")
 
 SYSTEM_PROMPT = """Sen bir pazar araştırması uzmanısın. Verilen girişim fikri
 için olası rakipleri ve konumlandırma önerisini üret. Cevabını SADECE şu JSON
@@ -43,7 +43,7 @@ def analyze_competitors():
     user_prompt = f"Fikir: {idea}\nSektör: {sector or 'belirtilmedi'}\nPazar bölgesi: {region or 'belirtilmedi'}"
 
     try:
-        raw = ask_claude(
+        raw = ask_ai(
             user_prompt=user_prompt,
             system_prompt=SYSTEM_PROMPT,
             max_tokens=1400,

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Geçmiş Analizler — VentureAgent{% endblock %}
+
+{% block content %}
+    <span class="eyebrow">Kayıtlı veri seti</span>
+    <h1>Geçmiş Analizler</h1>
+    <p class="subtitle">
+        Fikir analizi formundan gelen kayıtlar burada tutulur. Bu veri ileride
+        data science deneyleri, segment analizi ve model eğitimi için temel oluşturur.
+    </p>
+
+    {% if analyses %}
+        <div class="history-table-wrap">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Fikir</th>
+                        <th>Sektör</th>
+                        <th>Skor</th>
+                        <th>Risk</th>
+                        <th>Durum</th>
+                        <th>Tarih</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for analysis in analyses %}
+                        <tr>
+                            <td>{{ analysis.idea }}</td>
+                            <td>{{ analysis.sector or "Belirtilmedi" }}</td>
+                            <td><strong>{{ analysis.venture_score }}</strong></td>
+                            <td><span class="risk-pill">{{ analysis.risk_level }}</span></td>
+                            <td>{{ analysis.readiness_label }}</td>
+                            <td>{{ analysis.created_at }}</td>
+                            <td>
+                                <div class="table-actions">
+                                    <a href="{{ url_for('history.history_detail', analysis_id=analysis.id) }}">Detay</a>
+                                    <form method="POST" action="{{ url_for('history.delete_history_item', analysis_id=analysis.id) }}">
+                                        <button type="submit" class="link-danger" onclick="return confirm('Bu kaydı silmek istediğine emin misin?')">Sil</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <h2>Henüz kayıt yok</h2>
+            <p>İlk kayıt için Fikir Analizi sayfasından bir fikir analiz et.</p>
+            <a href="{{ url_for('idea.idea_form') }}" class="cta-button">Fikir Analiz Et →</a>
+        </div>
+    {% endif %}
+{% endblock %}

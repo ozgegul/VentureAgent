@@ -1,9 +1,9 @@
 """MVP roadmap oluşturma modülü."""
 
 from flask import Blueprint, render_template, request
-from app.services.claude_client import ask_claude, safe_parse_json
+from backend.services.ai_client import ask_ai, safe_parse_json
 
-roadmap_bp = Blueprint("roadmap", __name__, template_folder="../templates")
+roadmap_bp = Blueprint("roadmap", __name__, template_folder="../../frontend/templates")
 
 SYSTEM_PROMPT = """Sen bir ürün yöneticisisin. Verilen girişim fikri için MVP'ye
 giden bir yol haritası (roadmap) oluştur. Cevabını SADECE şu JSON şemasına
@@ -40,7 +40,7 @@ def generate_roadmap():
     )
 
     try:
-        raw = ask_claude(
+        raw = ask_ai(
             user_prompt=user_prompt,
             system_prompt=SYSTEM_PROMPT,
             max_tokens=1400,

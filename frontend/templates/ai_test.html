@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}AI Provider Test — VentureAgent{% endblock %}
+
+{% block content %}
+    <span class="eyebrow">AI entegrasyon testi</span>
+    <h1>AI Provider Test</h1>
+    <p class="subtitle">
+        Seçili sağlayıcı: <strong>{{ provider }}</strong>. Bu sayfa API bağlantısını
+        hızlıca doğrulamak için kullanılır.
+    </p>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('ai_test.ai_test_page') }}" class="form">
+        <label for="prompt">Test promptu</label>
+        <textarea id="prompt" name="prompt" rows="4" required>{{ prompt }}</textarea>
+
+        <button type="submit">AI ile Test Et</button>
+    </form>
+
+    {% if result %}
+        <div class="result">
+            <h2>AI Cevabı</h2>
+            <pre>{{ result }}</pre>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,9 +1,9 @@
 """Asansör konuşması ve pitch deck taslağı hazırlama modülü."""
 
 from flask import Blueprint, render_template, request
-from app.services.claude_client import ask_claude, safe_parse_json
+from backend.services.ai_client import ask_ai, safe_parse_json
 
-pitch_bp = Blueprint("pitch", __name__, template_folder="../templates")
+pitch_bp = Blueprint("pitch", __name__, template_folder="../../frontend/templates")
 
 ELEVATOR_SYSTEM_PROMPT = """Sen bir pitch koçusun. Verilen girişim fikri için
 30 saniyelik, akıcı ve ikna edici bir asansör konuşması (elevator pitch) yaz.
@@ -41,7 +41,7 @@ def generate_pitch():
     try:
         if pitch_type == "deck":
             user_prompt = f"Fikir: {idea}\nMevcut traction/kanıt: {traction or 'henüz yok'}"
-            raw = ask_claude(
+            raw = ask_ai(
                 user_prompt=user_prompt,
                 system_prompt=DECK_SYSTEM_PROMPT,
                 max_tokens=1600,
@@ -51,7 +51,7 @@ def generate_pitch():
             return render_template("pitch.html", elevator=None, slides=result.get("slides", []))
         else:
             user_prompt = f"Fikir: {idea}"
-            elevator = ask_claude(
+            elevator = ask_ai(
                 user_prompt=user_prompt,
                 system_prompt=ELEVATOR_SYSTEM_PROMPT,
                 max_tokens=400,

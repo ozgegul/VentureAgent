@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}VentureAgent{% endblock %}
+
+{% block content %}
+    <section class="hero-shell">
+        <div>
+            <span class="eyebrow">Girişimcinin AI cockpit'i</span>
+            <h1>Fikrini tahmine değil, sinyale göre büyüt.</h1>
+            <p class="subtitle">
+                VentureAgent; fikir analizi, pazar sinyalleri, rakip haritası,
+                gelir modeli ve MVP planını tek bir çalışma alanında toplar.
+                Girişim fikrini anlat, sistem onu yatırımcı gözüyle parçalara ayırsın.
+            </p>
+
+            <div class="hero-actions">
+                <a href="{{ url_for('chat.chat_page') }}" class="cta-button">Sohbete Başla →</a>
+                <a href="{{ url_for('idea.idea_form') }}" class="secondary-button">Fikri Test Et</a>
+            </div>
+        </div>
+
+        <aside class="cockpit-panel" aria-label="VentureAgent analiz paneli">
+            <div class="cockpit-top">
+                <span class="status-dot"></span>
+                <span class="cockpit-label">Live venture scan</span>
+            </div>
+            <div class="score-ring"><span>76</span></div>
+            <div class="signal-grid">
+                <div class="signal-card">
+                    <strong>8/10</strong>
+                    <span>Problem netliği</span>
+                </div>
+                <div class="signal-card">
+                    <strong>5</strong>
+                    <span>Rakip kümesi</span>
+                </div>
+                <div class="signal-card">
+                    <strong>3</strong>
+                    <span>Gelir yolu</span>
+                </div>
+                <div class="signal-card">
+                    <strong>MVP</strong>
+                    <span>Sonraki odak</span>
+                </div>
+            </div>
+        </aside>
+    </section>
+
+    <div class="hero-chat-teaser">
+        <div>
+            <strong>Nereden başlayacağını bilmiyor musun?</strong>
+            <p class="hint">Fikrini serbestçe anlat, sohbet ederek ilk analiz akışını çıkaralım.</p>
+        </div>
+        <a href="{{ url_for('chat.chat_page') }}" class="cta-button">Sohbete Başla →</a>
+    </div>
+
+    <div class="section-divider">Analiz Modülleri</div>
+
+    <div class="feature-grid">
+        <div class="feature-card">
+            <span class="step">Signal 01</span>
+            <h3>Fikir Analizi</h3>
+            <p>Fikrinin güçlü yönlerini, zayıf noktalarını ve ilk risklerini çıkar.</p>
+            <a href="{{ url_for('idea.idea_form') }}">Başla →</a>
+        </div>
+        <div class="feature-card">
+            <span class="step">Signal 02</span>
+            <h3>SWOT Analizi</h3>
+            <p>Stratejik resmi güçlü yön, zayıflık, fırsat ve tehdit olarak gör.</p>
+            <a href="{{ url_for('swot.swot_form') }}">Başla →</a>
+        </div>
+        <div class="feature-card">
+            <span class="step">Signal 03</span>
+            <h3>Rakip Araştırması</h3>
+            <p>Sektöründeki oyuncuları ve konumlandırma boşluklarını incele.</p>
+            <a href="{{ url_for('competitors.competitors_form') }}">Başla →</a>
+        </div>
+        <div class="feature-card">
+            <span class="step">Signal 04</span>
+            <h3>Gelir Modeli</h3>
+            <p>Abonelik, komisyon, freemium gibi seçenekleri fikrine göre tart.</p>
+            <a href="{{ url_for('revenue.revenue_form') }}">Başla →</a>
+        </div>
+        <div class="feature-card">
+            <span class="step">Signal 05</span>
+            <h3>MVP Roadmap</h3>
+            <p>İlk ürüne giden adımları faz, süre ve öncelik olarak düzenle.</p>
+            <a href="{{ url_for('roadmap.roadmap_form') }}">Başla →</a>
+        </div>
+        <div class="feature-card">
+            <span class="step">Signal 06</span>
+            <h3>Kanban</h3>
+            <p>Analizden çıkan işleri sürükle-bırak görev panosuna dönüştür.</p>
+            <a href="{{ url_for('kanban.kanban_form') }}">Başla →</a>
+        </div>
+        <div class="feature-card">
+            <span class="step">Signal 07</span>
+            <h3>Yatırımcı Bulma</h3>
+            <p>Aşamana ve sektörüne göre yatırımcı yaklaşım stratejisi al.</p>
+            <a href="{{ url_for('investors.investors_form') }}">Başla →</a>
+        </div>
+        <div class="feature-card">
+            <span class="step">Signal 08</span>
+            <h3>Pitch Hazırlama</h3>
+            <p>Asansör konuşması ve yatırımcı sunumu taslağını hızlıca oluştur.</p>
+            <a href="{{ url_for('pitch.pitch_form') }}">Başla →</a>
+        </div>
+    </div>
+{% endblock %}

@@ -1,9 +1,9 @@
 """Yatırımcı bulma tavsiyeleri modülü."""
 
 from flask import Blueprint, render_template, request
-from app.services.claude_client import ask_claude
+from backend.services.ai_client import ask_ai
 
-investors_bp = Blueprint("investors", __name__, template_folder="../templates")
+investors_bp = Blueprint("investors", __name__, template_folder="../../frontend/templates")
 
 SYSTEM_PROMPT = """Sen bir girişim sermayesi (VC) danışmanısın. Kullanıcının
 girişimi için yatırımcı bulma stratejisi öner. Şu başlıklarda yaz:
@@ -37,7 +37,7 @@ def advise_investors():
     )
 
     try:
-        advice = ask_claude(user_prompt=user_prompt, system_prompt=SYSTEM_PROMPT, max_tokens=1200)
+        advice = ask_ai(user_prompt=user_prompt, system_prompt=SYSTEM_PROMPT, max_tokens=1200)
     except Exception as exc:  # noqa: BLE001
         return render_template("investors.html", advice=None, error=str(exc))
 

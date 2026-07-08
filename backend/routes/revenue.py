@@ -1,9 +1,9 @@
 """Gelir modeli önerisi modülü."""
 
 from flask import Blueprint, render_template, request
-from app.services.claude_client import ask_claude, safe_parse_json
+from backend.services.ai_client import ask_ai, safe_parse_json
 
-revenue_bp = Blueprint("revenue", __name__, template_folder="../templates")
+revenue_bp = Blueprint("revenue", __name__, template_folder="../../frontend/templates")
 
 SYSTEM_PROMPT = """Sen bir iş modeli danışmanısın. Verilen girişim fikri için
 uygun gelir modellerini öner. Cevabını SADECE şu JSON şemasına uygun ver:
@@ -41,7 +41,7 @@ def analyze_revenue():
     )
 
     try:
-        raw = ask_claude(
+        raw = ask_ai(
             user_prompt=user_prompt,
             system_prompt=SYSTEM_PROMPT,
             max_tokens=1200,

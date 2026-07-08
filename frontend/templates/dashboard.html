@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Data Dashboard — VentureAgent{% endblock %}
+
+{% block content %}
+    <span class="eyebrow">Data science dashboard</span>
+    <h1>Venture Sinyalleri</h1>
+    <p class="subtitle">
+        Kaydedilen fikir analizlerinden üretilen skor, risk ve sektör dağılımları.
+        Bu ekran data science tarafının topladığı veriyi özetler.
+    </p>
+
+    {% set summary = metrics.summary %}
+
+    {% if summary.total_analyses %}
+        <section class="metric-grid">
+            <div class="metric-card">
+                <span>Toplam analiz</span>
+                <strong>{{ summary.total_analyses }}</strong>
+            </div>
+            <div class="metric-card">
+                <span>Ortalama skor</span>
+                <strong>{{ summary.average_score }}</strong>
+            </div>
+            <div class="metric-card">
+                <span>En yüksek skor</span>
+                <strong>{{ summary.best_score }}</strong>
+            </div>
+            <div class="metric-card">
+                <span>En düşük skor</span>
+                <strong>{{ summary.lowest_score }}</strong>
+            </div>
+        </section>
+
+        <div class="dashboard-grid">
+            <section class="dashboard-panel">
+                <h2>Risk Dağılımı</h2>
+                {% for item in metrics.risk_distribution %}
+                    <div class="bar-row">
+                        <span>{{ item.risk_level }}</span>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width: {{ (item.count / summary.total_analyses * 100)|round(0) }}%"></div>
+                        </div>
+                        <strong>{{ item.count }}</strong>
+                    </div>
+                {% endfor %}
+            </section>
+
+            <section class="dashboard-panel">
+                <h2>Sektör Dağılımı</h2>
+                {% for item in metrics.sector_distribution %}
+                    <div class="bar-row">
+                        <span>{{ item.sector }}</span>
+                        <div class="bar-track">
+                            <div class="bar-fill coral" style="width: {{ (item.count / summary.total_analyses * 100)|round(0) }}%"></div>
+                        </div>
+                        <strong>{{ item.count }}</strong>
+                    </div>
+                {% endfor %}
+            </section>
+        </div>
+
+        <section class="dashboard-panel">
+            <h2>En Yüksek Skorlu Fikirler</h2>
+            <div class="history-table-wrap compact-table">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Fikir</th>
+                            <th>Sektör</th>
+                            <th>Skor</th>
+                            <th>Risk</th>
+                            <th>Durum</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for idea in metrics.top_ideas %}
+                            <tr>
+                                <td>{{ idea.idea }}</td>
+                                <td>{{ idea.sector or "Belirtilmedi" }}</td>
+                                <td><strong>{{ idea.venture_score }}</strong></td>
+                                <td><span class="risk-pill">{{ idea.risk_level }}</span></td>
+                                <td>{{ idea.readiness_label }}</td>
+                                <td><a href="{{ url_for('history.history_detail', analysis_id=idea.id) }}">Detay</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    {% else %}
+        <div class="empty-state">
+            <h2>Henüz analiz verisi yok</h2>
+            <p>Dashboard metrikleri için önce birkaç fikir analizi kaydedilmeli.</p>
+            <a href="{{ url_for('idea.idea_form') }}" class="cta-button">Fikir Analiz Et →</a>
+        </div>
+    {% endif %}
+{% endblock %}
