@@ -27,6 +27,7 @@ def create_app():
     from backend.routes.ai_test import ai_test_bp
     from backend.routes.chat import chat_bp
     from backend.routes.dashboard import dashboard_bp
+    from backend.routes.guided import guided_bp
     from backend.routes.history import history_bp
     from backend.routes.idea import idea_bp
     from backend.routes.swot import swot_bp
@@ -41,6 +42,7 @@ def create_app():
     app.register_blueprint(ai_test_bp, url_prefix="/ai-test")
     app.register_blueprint(chat_bp, url_prefix="/chat")
     app.register_blueprint(dashboard_bp, url_prefix="/dashboard")
+    app.register_blueprint(guided_bp, url_prefix="/guided")
     app.register_blueprint(history_bp, url_prefix="/history")
     app.register_blueprint(idea_bp, url_prefix="/idea")
     app.register_blueprint(swot_bp, url_prefix="/swot")

@@ -12,23 +12,19 @@
     <nav class="navbar">
         <a href="{{ url_for('main.index') }}" class="brand">VentureAgent</a>
         <div class="nav-links">
-            <a href="{{ url_for('chat.chat_page') }}">Sohbet</a>
-            <a href="{{ url_for('idea.idea_form') }}">Fikir Analizi</a>
-            <a href="{{ url_for('swot.swot_form') }}">SWOT</a>
-            <a href="{{ url_for('competitors.competitors_form') }}">Rakipler</a>
-            <a href="{{ url_for('revenue.revenue_form') }}">Gelir Modeli</a>
-            <a href="{{ url_for('roadmap.roadmap_form') }}">Roadmap</a>
-            <a href="{{ url_for('kanban.kanban_form') }}">Kanban</a>
-            <a href="{{ url_for('investors.investors_form') }}">Yatırımcı</a>
-            <a href="{{ url_for('pitch.pitch_form') }}">Pitch</a>
+            <a href="{{ url_for('main.index') }}">Başla</a>
             <a href="{{ url_for('dashboard.dashboard_page') }}">Dashboard</a>
             <a href="{{ url_for('history.history_page') }}">Geçmiş</a>
-            <a href="{{ url_for('ai_test.ai_test_page') }}">AI Test</a>
+            <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Tema değiştir" title="Tema değiştir">
+                <span id="theme-toggle-icon">Dark</span>
+            </button>
         </div>
     </nav>
 
     <main class="container">
         {% block content %}{% endblock %}
     </main>
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+    {% block scripts %}{% endblock %}
 </body>
 </html>

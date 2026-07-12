@@ -54,11 +54,40 @@ def init_db() -> None:
             readiness_label TEXT NOT NULL,
             recommendations TEXT NOT NULL,
             ai_analysis TEXT,
+            mentor_problem_clarity INTEGER,
+            mentor_market_potential INTEGER,
+            mentor_revenue_potential INTEGER,
+            mentor_mvp_feasibility INTEGER,
+            mentor_overall_score INTEGER,
+            mentor_notes TEXT,
             created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
         """
     )
+    _ensure_columns(
+        db,
+        "idea_analyses",
+        {
+            "mentor_problem_clarity": "INTEGER",
+            "mentor_market_potential": "INTEGER",
+            "mentor_revenue_potential": "INTEGER",
+            "mentor_mvp_feasibility": "INTEGER",
+            "mentor_overall_score": "INTEGER",
+            "mentor_notes": "TEXT",
+        },
+    )
     db.commit()
+
+
+def _ensure_columns(db: sqlite3.Connection, table: str, columns: dict[str, str]) -> None:
+    """Add missing columns for lightweight SQLite migrations."""
+    existing_columns = {
+        row["name"]
+        for row in db.execute(f"PRAGMA table_info({table})").fetchall()
+    }
+    for column_name, column_type in columns.items():
+        if column_name not in existing_columns:
+            db.execute(f"ALTER TABLE {table} ADD COLUMN {column_name} {column_type}")
 
 
 def init_app(app) -> None:
@@ -158,6 +187,12 @@ def get_idea_analysis(analysis_id: int) -> dict[str, Any] | None:
             readiness_label,
             recommendations,
             ai_analysis,
+            mentor_problem_clarity,
+            mentor_market_potential,
+            mentor_revenue_potential,
+            mentor_mvp_feasibility,
+            mentor_overall_score,
+            mentor_notes,
             created_at
         FROM idea_analyses
         WHERE id = ?
@@ -179,6 +214,47 @@ def delete_idea_analysis(analysis_id: int) -> None:
     get_db().commit()
 
 
+def save_mentor_evaluation(
+    *,
+    analysis_id: int,
+    problem_clarity: int,
+    market_potential: int,
+    revenue_potential: int,
+    mvp_feasibility: int,
+    overall_score: int,
+    notes: str,
+) -> None:
+    """Save mentor labels for future model training."""
+    get_db().execute(
+        """
+        UPDATE idea_analyses
+        SET
+            mentor_problem_clarity = ?,
+            mentor_market_potential = ?,
+            mentor_revenue_potential = ?,
+            mentor_mvp_feasibility = ?,
+            mentor_overall_score = ?,
+            mentor_notes = ?
+        WHERE id = ?
+        """,
+        (
+            _normalize_label(problem_clarity),
+            _normalize_label(market_potential),
+            _normalize_label(revenue_potential),
+            _normalize_label(mvp_feasibility),
+            _normalize_label(overall_score),
+            notes.strip(),
+            analysis_id,
+        ),
+    )
+    get_db().commit()
+
+
+def _normalize_label(value: int) -> int:
+    """Keep mentor labels in the 1-5 range."""
+    return max(1, min(5, int(value)))
+
+
 def get_dashboard_metrics() -> dict[str, Any]:
     """Return aggregate metrics for the data science dashboard."""
     db = get_db()
@@ -188,7 +264,9 @@ def get_dashboard_metrics() -> dict[str, Any]:
             COUNT(*) AS total_analyses,
             ROUND(AVG(venture_score), 2) AS average_score,
             MAX(venture_score) AS best_score,
-            MIN(venture_score) AS lowest_score
+            MIN(venture_score) AS lowest_score,
+            COUNT(mentor_overall_score) AS labeled_analyses,
+            ROUND(AVG(mentor_overall_score), 2) AS average_mentor_score
         FROM idea_analyses
         """
     ).fetchone()

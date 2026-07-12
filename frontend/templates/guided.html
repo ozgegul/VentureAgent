@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Rehberli Analiz — VentureAgent{% endblock %}
+
+{% block content %}
+    <section class="guided-hero">
+        <span class="eyebrow">Rehberli analiz</span>
+        <h1>Fikrini anlat, birlikte netleştirelim.</h1>
+        <p class="subtitle">
+            SWOT, roadmap veya gelir modeli bilmek zorunda değilsin. Kısa kısa
+            cevap ver; VentureAgent fikrini anlaşılır bir ilk değerlendirmeye çevirsin.
+        </p>
+    </section>
+
+    <section class="guided-shell" data-analyze-url="{{ url_for('guided.analyze_guided') }}">
+        <div class="guided-chat" id="guided-chat"></div>
+
+        <form class="guided-input-row" id="guided-form">
+            <input type="text" id="guided-input" autocomplete="off" placeholder="Cevabını yaz..." required>
+            <button type="submit">Gönder</button>
+        </form>
+
+        <div class="guided-choice-row" id="guided-choice-row" hidden></div>
+
+        <div class="guided-progress">
+            <span id="guided-progress-label">1 / 8</span>
+            <div class="guided-progress-track">
+                <div class="guided-progress-fill" id="guided-progress-fill"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="guided-result" id="guided-result" hidden></section>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/guided.js') }}"></script>
+{% endblock %}
