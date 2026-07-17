@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Yönetim Girişi — VentureAgent{% endblock %}
+
+{% block content %}
+    <span class="eyebrow">Yönetim</span>
+    <h1>Yönetim girişi</h1>
+    <p class="subtitle">Kullanıcı mesajlarını ve fikir kayıtlarını görmek için giriş yap.</p>
+
+    <form method="POST" class="form admin-login-form">
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+        <label for="password">Şifre</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+        <button type="submit">Giriş yap</button>
+    </form>
+{% endblock %}

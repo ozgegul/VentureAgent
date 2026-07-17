@@ -5,28 +5,26 @@
 {% block content %}
     <section class="simple-home-hero">
         <span class="eyebrow">İlk fikir değerlendirmesi</span>
-        <h1>Girişim fikrini birkaç soruyla netleştir.</h1>
+        <h1>Fikrini yaz, doğrudan analizini al.</h1>
         <p class="subtitle">
-            SWOT, roadmap veya yatırımcı terimleri bilmen gerekmiyor. Kısa kısa
-            cevap ver; sistem fikrini anlaşılır bir skor, risk yorumu ve sonraki adımlara dönüştürsün.
+            Uzun bir soru-cevap yok. Fikrini, varsa hedef kitleni ve lokasyonu tek mesajda yaz;
+            VentureAgent fırsatları, riskleri ve ilk adımı çıkarsın.
         </p>
     </section>
 
-    <section class="guided-shell home-guided" data-analyze-url="{{ url_for('guided.analyze_guided') }}">
+    <section class="guided-shell home-guided" data-message-url="{{ url_for('guided.guided_message') }}">
         <div class="guided-chat" id="guided-chat"></div>
 
         <form class="guided-input-row" id="guided-form">
-            <input type="text" id="guided-input" autocomplete="off" placeholder="Cevabını yaz..." required>
-            <button type="submit">Gönder</button>
+            <input type="text" id="guided-input" autocomplete="off" placeholder="Fikrini tek mesajda anlat..." required>
+            <button type="submit">Analiz et</button>
         </form>
 
         <div class="guided-choice-row" id="guided-choice-row" hidden></div>
 
-        <div class="guided-progress">
-            <span id="guided-progress-label">1 / 8</span>
-            <div class="guided-progress-track">
-                <div class="guided-progress-fill" id="guided-progress-fill"></div>
-            </div>
+        <div class="guided-status" id="guided-status" data-state="ready">
+            <span class="guided-status-dot" aria-hidden="true"></span>
+            <span id="guided-progress-label">Hazır · Fikrini yazabilirsin</span>
         </div>
     </section>
 

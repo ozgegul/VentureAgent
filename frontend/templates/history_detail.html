@@ -61,67 +61,6 @@
         </div>
     {% endif %}
 
-    <section class="mentor-panel">
-        <h2>Mentor Değerlendirmesi</h2>
-        <p>
-            Bu alan model eğitimi için etiket üretir. 1 düşük, 5 yüksek anlamına gelir.
-        </p>
-
-        <form method="POST" action="{{ url_for('history.save_mentor_labels', analysis_id=analysis.id) }}" class="mentor-form">
-            <div class="score-input-grid">
-                <label for="mentor_problem_clarity">
-                    Problem netliği
-                    <select id="mentor_problem_clarity" name="mentor_problem_clarity">
-                        {% for value in range(1, 6) %}
-                            <option value="{{ value }}" {% if analysis.mentor_problem_clarity == value %}selected{% endif %}>{{ value }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-
-                <label for="mentor_market_potential">
-                    Pazar potansiyeli
-                    <select id="mentor_market_potential" name="mentor_market_potential">
-                        {% for value in range(1, 6) %}
-                            <option value="{{ value }}" {% if analysis.mentor_market_potential == value %}selected{% endif %}>{{ value }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-
-                <label for="mentor_revenue_potential">
-                    Gelir modeli uygunluğu
-                    <select id="mentor_revenue_potential" name="mentor_revenue_potential">
-                        {% for value in range(1, 6) %}
-                            <option value="{{ value }}" {% if analysis.mentor_revenue_potential == value %}selected{% endif %}>{{ value }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-
-                <label for="mentor_mvp_feasibility">
-                    MVP yapılabilirliği
-                    <select id="mentor_mvp_feasibility" name="mentor_mvp_feasibility">
-                        {% for value in range(1, 6) %}
-                            <option value="{{ value }}" {% if analysis.mentor_mvp_feasibility == value %}selected{% endif %}>{{ value }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-
-                <label for="mentor_overall_score">
-                    Genel mentor skoru
-                    <select id="mentor_overall_score" name="mentor_overall_score">
-                        {% for value in range(1, 6) %}
-                            <option value="{{ value }}" {% if analysis.mentor_overall_score == value %}selected{% endif %}>{{ value }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-            </div>
-
-            <label for="mentor_notes">Mentor notu</label>
-            <textarea id="mentor_notes" name="mentor_notes" rows="4">{{ analysis.mentor_notes or "" }}</textarea>
-
-            <button type="submit">Mentor Değerlendirmesini Kaydet</button>
-        </form>
-    </section>
-
     <div class="detail-actions">
         <a href="{{ url_for('history.history_page') }}">← Geçmiş analizlere dön</a>
         <form method="POST" action="{{ url_for('history.delete_history_item', analysis_id=analysis.id) }}">

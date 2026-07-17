@@ -5,28 +5,26 @@
 {% block content %}
     <section class="guided-hero">
         <span class="eyebrow">Rehberli analiz</span>
-        <h1>Fikrini anlat, birlikte netleştirelim.</h1>
+        <h1>Fikrini ve yerini yaz, bölgesel riskleri gör.</h1>
         <p class="subtitle">
-            SWOT, roadmap veya gelir modeli bilmek zorunda değilsin. Kısa kısa
-            cevap ver; VentureAgent fikrini anlaşılır bir ilk değerlendirmeye çevirsin.
+            Tek seferde fikrini ve uygulamak istediğin yeri yaz. VentureAgent bölgesel
+            fırsatları, riskleri ve ilk doğrulama adımlarını çıkarsın; sonra sohbete devam et.
         </p>
     </section>
 
-    <section class="guided-shell" data-analyze-url="{{ url_for('guided.analyze_guided') }}">
+    <section class="guided-shell" data-message-url="{{ url_for('guided.guided_message') }}">
         <div class="guided-chat" id="guided-chat"></div>
 
         <form class="guided-input-row" id="guided-form">
-            <input type="text" id="guided-input" autocomplete="off" placeholder="Cevabını yaz..." required>
-            <button type="submit">Gönder</button>
+            <input type="text" id="guided-input" autocomplete="off" placeholder="Fikrini anlat..." required>
+            <button type="submit">Analiz et</button>
         </form>
 
         <div class="guided-choice-row" id="guided-choice-row" hidden></div>
 
-        <div class="guided-progress">
-            <span id="guided-progress-label">1 / 8</span>
-            <div class="guided-progress-track">
-                <div class="guided-progress-fill" id="guided-progress-fill"></div>
-            </div>
+        <div class="guided-status" id="guided-status" data-state="ready">
+            <span class="guided-status-dot" aria-hidden="true"></span>
+            <span id="guided-progress-label">Hazır · Fikrini yazabilirsin</span>
         </div>
     </section>
 

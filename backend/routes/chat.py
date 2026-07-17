@@ -11,7 +11,10 @@ Konuşma geçmişi Flask session'da (çerez) tutulur. Kalıcı/çok kullanıcıl
 yapı için ileride veritabanına taşınabilir.
 """
 
+from uuid import uuid4
+
 from flask import Blueprint, render_template, request, jsonify, session
+from backend.database import save_chat_message
 from backend.services.ai_client import ask_ai_conversation
 
 chat_bp = Blueprint("chat", __name__, template_folder="../../frontend/templates")
@@ -36,6 +39,7 @@ olduğunu belirt, uydurma kesin rakam verme."""
 @chat_bp.route("/", methods=["GET"])
 def chat_page():
     session.setdefault("chat_history", [])
+    session.setdefault("chat_session_id", uuid4().hex)
     return render_template("chat.html", history=session["chat_history"])
 
 
@@ -48,7 +52,9 @@ def send_message():
         return jsonify({"error": "Mesaj boş olamaz."}), 400
 
     history = session.get("chat_history", [])
+    chat_session_id = session.setdefault("chat_session_id", uuid4().hex)
     history.append({"role": "user", "content": user_message})
+    save_chat_message(session_id=chat_session_id, role="user", content=user_message)
 
     try:
         reply = ask_ai_conversation(
@@ -60,6 +66,7 @@ def send_message():
         return jsonify({"error": str(exc)}), 500
 
     history.append({"role": "assistant", "content": reply})
+    save_chat_message(session_id=chat_session_id, role="assistant", content=reply)
     session["chat_history"] = history
 
     return jsonify({"reply": reply})

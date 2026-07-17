@@ -2,12 +2,14 @@
 
 from flask import Blueprint, render_template, request
 
+from backend.routes.admin import admin_required
 from backend.services.ai_client import ask_ai, get_ai_provider
 
 ai_test_bp = Blueprint("ai_test", __name__, template_folder="../../frontend/templates")
 
 
 @ai_test_bp.route("/", methods=["GET", "POST"])
+@admin_required
 def ai_test_page():
     """Render an AI provider test page."""
     result = None

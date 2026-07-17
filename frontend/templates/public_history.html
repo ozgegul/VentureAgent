@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Analizlerim — VentureAgent{% endblock %}
+
+{% block content %}
+    <span class="eyebrow">Kendi kayıtların</span>
+    <h1>Analizlerim</h1>
+    <p class="subtitle">
+        Bu tarayıcıda oluşturduğun fikir analizleri burada görünür.
+    </p>
+
+    {% if analyses %}
+        <div class="history-table-wrap">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Fikir</th>
+                        <th>Sektör</th>
+                        <th>Skor</th>
+                        <th>Risk</th>
+                        <th>Durum</th>
+                        <th>Tarih</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for analysis in analyses %}
+                        <tr>
+                            <td>{{ analysis.idea }}</td>
+                            <td>{{ analysis.sector or "Belirtilmedi" }}</td>
+                            <td><strong>{{ analysis.venture_score }}</strong></td>
+                            <td><span class="risk-pill">{{ analysis.risk_level }}</span></td>
+                            <td>{{ analysis.readiness_label }}</td>
+                            <td>{{ analysis.created_at }}</td>
+                            <td>
+                                <div class="table-actions">
+                                    <a href="{{ url_for('public_history.public_history_detail', token=analysis.public_token) }}">Sonucu Gör</a>
+                                    <form method="POST" action="{{ url_for('public_history.public_history_delete', token=analysis.public_token) }}">
+                                        <button type="submit" class="link-danger" onclick="return confirm('Bu analizi silmek istediğine emin misin?')">Sil</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <h2>Henüz analiz yok</h2>
+            <p>Bir fikir analizi oluşturduğunda sonucu burada görebileceksin.</p>
+            <a href="{{ url_for('main.index') }}" class="cta-button">Analize Başla →</a>
+        </div>
+    {% endif %}
+{% endblock %}

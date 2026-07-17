@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Yönetim Paneli — VentureAgent{% endblock %}
+
+{% block content %}
+    <div class="admin-heading">
+        <div>
+            <span class="eyebrow">Yönetim paneli</span>
+            <h1>Kullanıcı Girdileri</h1>
+            <p class="subtitle">
+                Chat ekranına yazılan son kullanıcı mesajları ve fikir analizi kayıtları burada görünür.
+            </p>
+        </div>
+        <form method="POST" action="{{ url_for('admin.admin_logout') }}">
+            <button type="submit" class="secondary-button">Çıkış</button>
+        </form>
+    </div>
+
+    <div class="metric-grid admin-metrics">
+        <div class="metric-card">
+            <span>Fikir kaydı</span>
+            <strong>{{ metrics.total_ideas }}</strong>
+        </div>
+        <div class="metric-card">
+            <span>Kullanıcı mesajı</span>
+            <strong>{{ metrics.total_user_messages }}</strong>
+        </div>
+        <div class="metric-card">
+            <span>Chat oturumu</span>
+            <strong>{{ metrics.total_chat_sessions }}</strong>
+        </div>
+    </div>
+
+    <section class="admin-section">
+        <div class="section-divider">Son chat mesajları</div>
+        {% if chat_messages %}
+            <div class="admin-message-list">
+                {% for message in chat_messages %}
+                    <article class="admin-message">
+                        <div class="admin-message-meta">
+                            <strong>{{ message.created_at }}</strong>
+                            <span>Oturum {{ message.session_id[:8] }}</span>
+                        </div>
+                        <p>{{ message.content }}</p>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h2>Henüz chat mesajı yok</h2>
+                <p>Chat sayfasından yazılan yeni kullanıcı mesajları burada listelenecek.</p>
+            </div>
+        {% endif %}
+    </section>
+
+    <section class="admin-section">
+        <div class="section-divider">Son fikir analizleri</div>
+        {% if analyses %}
+            <div class="history-table-wrap">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Fikir</th>
+                            <th>Sektör</th>
+                            <th>Skor</th>
+                            <th>Risk</th>
+                            <th>Tarih</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for analysis in analyses %}
+                            <tr>
+                                <td>
+                                    <strong>{{ analysis.idea }}</strong>
+                                    {% if analysis.ai_analysis %}
+                                        <details class="admin-ai-preview">
+                                            <summary>AI yorumunu göster</summary>
+                                            <pre>{{ analysis.ai_analysis }}</pre>
+                                        </details>
+                                    {% else %}
+                                        <p class="admin-ai-empty">AI yorumu yok.</p>
+                                    {% endif %}
+                                </td>
+                                <td>{{ analysis.sector or "Belirtilmedi" }}</td>
+                                <td><strong>{{ analysis.venture_score }}</strong></td>
+                                <td><span class="risk-pill">{{ analysis.risk_level }}</span></td>
+                                <td>{{ analysis.created_at }}</td>
+                                <td>
+                                    <div class="table-actions">
+                                        <a href="{{ url_for('history.history_detail', analysis_id=analysis.id) }}">Detay</a>
+                                        <form method="POST" action="{{ url_for('history.delete_history_item', analysis_id=analysis.id) }}">
+                                            <button type="submit" class="link-danger" onclick="return confirm('Bu kaydı kalıcı olarak silmek istediğine emin misin?')">Sil</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h2>Henüz fikir analizi yok</h2>
+                <p>Fikir analizi formundan gelen kayıtlar burada listelenecek.</p>
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

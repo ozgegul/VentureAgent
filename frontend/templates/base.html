@@ -4,17 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}VentureAgent{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/ventureagent-logo.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <nav class="navbar">
-        <a href="{{ url_for('main.index') }}" class="brand">VentureAgent</a>
+        <a href="{{ url_for('main.index') }}" class="brand" aria-label="VentureAgent ana sayfa">
+            <img src="{{ url_for('static', filename='img/ventureagent-logo.png') }}" alt="" class="brand-logo">
+            <span>VentureAgent</span>
+        </a>
         <div class="nav-links">
             <a href="{{ url_for('main.index') }}">Başla</a>
-            <a href="{{ url_for('dashboard.dashboard_page') }}">Dashboard</a>
-            <a href="{{ url_for('history.history_page') }}">Geçmiş</a>
+            <a href="{{ url_for('public_history.public_history_page') }}">Analizlerim</a>
+            {% if session.get("admin_authenticated") %}
+                <a href="{{ url_for('admin.admin_page') }}">Panel</a>
+                <a href="{{ url_for('dashboard.dashboard_page') }}">Dashboard</a>
+                <a href="{{ url_for('history.history_page') }}">Geçmiş</a>
+            {% endif %}
             <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Tema değiştir" title="Tema değiştir">
                 <span id="theme-toggle-icon">Dark</span>
             </button>

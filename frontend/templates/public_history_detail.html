@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Analiz Sonucu — VentureAgent{% endblock %}
+
+{% block content %}
+    <span class="eyebrow">Analiz sonucu</span>
+    <h1>{{ analysis.idea }}</h1>
+    <p class="subtitle">
+        {{ analysis.created_at }} tarihinde oluşturulan değerlendirme.
+    </p>
+
+    <section class="venture-score-card">
+        <div class="venture-score-main">
+            <span class="score-label">Venture Score</span>
+            <strong>{{ analysis.venture_score }}</strong>
+            <span class="score-caption">{{ analysis.readiness_label }}</span>
+        </div>
+        <div class="venture-score-detail">
+            <span class="risk-pill">{{ analysis.risk_level }}</span>
+            <h2>Sonraki adımlar</h2>
+            <ul>
+                {% for recommendation in analysis.recommendations %}
+                    <li>{{ recommendation }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+
+    <div class="detail-grid">
+        <section class="detail-card">
+            <h2>Fikir Bilgileri</h2>
+            <dl>
+                <dt>Problem</dt>
+                <dd>{{ analysis.problem }}</dd>
+                <dt>Hedef kitle</dt>
+                <dd>{{ analysis.target_audience or "Belirtilmedi" }}</dd>
+                <dt>Sektör</dt>
+                <dd>{{ analysis.sector or "Belirtilmedi" }}</dd>
+            </dl>
+        </section>
+
+        <section class="detail-card">
+            <h2>Sinyal Skorları</h2>
+            <dl>
+                <dt>Problem aciliyeti</dt>
+                <dd>{{ analysis.problem_severity }}/5</dd>
+                <dt>Hedef kitle netliği</dt>
+                <dd>{{ analysis.target_audience_clarity }}/5</dd>
+                <dt>Rekabet yoğunluğu</dt>
+                <dd>{{ analysis.competition_intensity }}/5</dd>
+                <dt>Gelir modeli netliği</dt>
+                <dd>{{ analysis.monetization_clarity }}/5</dd>
+            </dl>
+        </section>
+    </div>
+
+    {% if analysis.ai_analysis %}
+        <div class="result">
+            <h2>AI Yorumu</h2>
+            <pre>{{ analysis.ai_analysis }}</pre>
+        </div>
+    {% endif %}
+
+    <section class="mentor-panel">
+        <h2>Analiz Değerlendirmesi</h2>
+        <p>
+            Analizin sana göre ne kadar doğru ve faydalı olduğunu puanla. Bu geri bildirim,
+            ileride skorlama modelini geliştirmek için kullanılacak.
+        </p>
+
+        <form method="POST" action="{{ url_for('public_history.public_history_feedback', token=analysis.public_token) }}" class="mentor-form">
+            <div class="score-input-grid">
+                <label for="mentor_problem_clarity">
+                    Problem netliği
+                    <select id="mentor_problem_clarity" name="mentor_problem_clarity">
+                        {% for value in range(1, 6) %}
+                            <option value="{{ value }}" {% if analysis.mentor_problem_clarity == value %}selected{% endif %}>{{ value }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+                <label for="mentor_market_potential">
+                    Pazar potansiyeli
+                    <select id="mentor_market_potential" name="mentor_market_potential">
+                        {% for value in range(1, 6) %}
+                            <option value="{{ value }}" {% if analysis.mentor_market_potential == value %}selected{% endif %}>{{ value }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+                <label for="mentor_revenue_potential">
+                    Gelir modeli uygunluğu
+                    <select id="mentor_revenue_potential" name="mentor_revenue_potential">
+                        {% for value in range(1, 6) %}
+                            <option value="{{ value }}" {% if analysis.mentor_revenue_potential == value %}selected{% endif %}>{{ value }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+                <label for="mentor_mvp_feasibility">
+                    MVP yapılabilirliği
+                    <select id="mentor_mvp_feasibility" name="mentor_mvp_feasibility">
+                        {% for value in range(1, 6) %}
+                            <option value="{{ value }}" {% if analysis.mentor_mvp_feasibility == value %}selected{% endif %}>{{ value }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+                <label for="mentor_overall_score">
+                    Genel fayda skoru
+                    <select id="mentor_overall_score" name="mentor_overall_score">
+                        {% for value in range(1, 6) %}
+                            <option value="{{ value }}" {% if analysis.mentor_overall_score == value %}selected{% endif %}>{{ value }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+            </div>
+
+            <label for="mentor_notes">Kısa not</label>
+            <textarea id="mentor_notes" name="mentor_notes" rows="4">{{ analysis.mentor_notes or "" }}</textarea>
+
+            <button type="submit">Değerlendirmeyi Kaydet</button>
+        </form>
+    </section>
+
+    <div class="detail-actions">
+        <a href="{{ url_for('public_history.public_history_page') }}">← Analizlerime dön</a>
+        <form method="POST" action="{{ url_for('public_history.public_history_delete', token=analysis.public_token) }}">
+            <button type="submit" class="danger-button" onclick="return confirm('Bu analizi silmek istediğine emin misin?')">Analizi Sil</button>
+        </form>
+    </div>
+{% endblock %}

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import secrets
 import sqlite3
 from pathlib import Path
 from typing import Any
@@ -60,6 +61,20 @@ def init_db() -> None:
             mentor_mvp_feasibility INTEGER,
             mentor_overall_score INTEGER,
             mentor_notes TEXT,
+            public_token TEXT,
+            session_id TEXT,
+            public_hidden_at TEXT,
+            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+        """
+    )
+    db.execute(
+        """
+        CREATE TABLE IF NOT EXISTS chat_messages (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            session_id TEXT NOT NULL,
+            role TEXT NOT NULL,
+            content TEXT NOT NULL,
             created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
         """
@@ -74,6 +89,9 @@ def init_db() -> None:
             "mentor_mvp_feasibility": "INTEGER",
             "mentor_overall_score": "INTEGER",
             "mentor_notes": "TEXT",
+            "public_token": "TEXT",
+            "session_id": "TEXT",
+            "public_hidden_at": "TEXT",
         },
     )
     db.commit()
@@ -106,8 +124,10 @@ def save_idea_analysis(
     signal,
     venture_score,
     ai_analysis: str | None,
+    session_id: str | None = None,
 ) -> int:
     """Persist an idea analysis and return the inserted row id."""
+    public_token = secrets.token_urlsafe(24)
     cursor = get_db().execute(
         """
         INSERT INTO idea_analyses (
@@ -123,9 +143,11 @@ def save_idea_analysis(
             risk_level,
             readiness_label,
             recommendations,
-            ai_analysis
+            ai_analysis,
+            public_token,
+            session_id
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             idea,
@@ -141,10 +163,35 @@ def save_idea_analysis(
             venture_score.readiness_label,
             json.dumps(venture_score.recommendations, ensure_ascii=False),
             ai_analysis,
+            public_token,
+            session_id,
         ),
     )
     get_db().commit()
     return int(cursor.lastrowid)
+
+
+def list_session_idea_analyses(session_id: str, limit: int = 20) -> list[dict[str, Any]]:
+    """Return saved analyses that belong to one browser session."""
+    rows = get_db().execute(
+        """
+        SELECT
+            id,
+            idea,
+            sector,
+            venture_score,
+            risk_level,
+            readiness_label,
+            public_token,
+            created_at
+        FROM idea_analyses
+        WHERE session_id = ? AND public_hidden_at IS NULL
+        ORDER BY created_at DESC, id DESC
+        LIMIT ?
+        """,
+        (session_id, limit),
+    )
+    return [dict(row) for row in rows.fetchall()]
 
 
 def list_idea_analyses(limit: int = 25) -> list[dict[str, Any]]:
@@ -158,6 +205,7 @@ def list_idea_analyses(limit: int = 25) -> list[dict[str, Any]]:
             venture_score,
             risk_level,
             readiness_label,
+            ai_analysis,
             created_at
         FROM idea_analyses
         ORDER BY created_at DESC, id DESC
@@ -166,6 +214,60 @@ def list_idea_analyses(limit: int = 25) -> list[dict[str, Any]]:
         (limit,),
     )
     return [dict(row) for row in rows.fetchall()]
+
+
+def save_chat_message(*, session_id: str, role: str, content: str) -> int:
+    """Persist one chat message and return the inserted row id."""
+    cursor = get_db().execute(
+        """
+        INSERT INTO chat_messages (session_id, role, content)
+        VALUES (?, ?, ?)
+        """,
+        (session_id, role, content),
+    )
+    get_db().commit()
+    return int(cursor.lastrowid)
+
+
+def list_chat_messages(limit: int = 100, role: str | None = None) -> list[dict[str, Any]]:
+    """Return the latest saved chat messages."""
+    if role:
+        rows = get_db().execute(
+            """
+            SELECT id, session_id, role, content, created_at
+            FROM chat_messages
+            WHERE role = ?
+            ORDER BY created_at DESC, id DESC
+            LIMIT ?
+            """,
+            (role, limit),
+        )
+    else:
+        rows = get_db().execute(
+            """
+            SELECT id, session_id, role, content, created_at
+            FROM chat_messages
+            ORDER BY created_at DESC, id DESC
+            LIMIT ?
+            """,
+            (limit,),
+        )
+
+    return [dict(row) for row in rows.fetchall()]
+
+
+def get_admin_metrics() -> dict[str, int]:
+    """Return simple admin counters."""
+    db = get_db()
+    row = db.execute(
+        """
+        SELECT
+            (SELECT COUNT(*) FROM idea_analyses) AS total_ideas,
+            (SELECT COUNT(*) FROM chat_messages WHERE role = 'user') AS total_user_messages,
+            (SELECT COUNT(DISTINCT session_id) FROM chat_messages) AS total_chat_sessions
+        """
+    ).fetchone()
+    return dict(row)
 
 
 def get_idea_analysis(analysis_id: int) -> dict[str, Any] | None:
@@ -208,9 +310,60 @@ def get_idea_analysis(analysis_id: int) -> dict[str, Any] | None:
     return analysis
 
 
+def get_public_idea_analysis(public_token: str, session_id: str) -> dict[str, Any] | None:
+    """Return one analysis when token and browser session match."""
+    row = get_db().execute(
+        """
+        SELECT
+            id,
+            idea,
+            problem,
+            target_audience,
+            sector,
+            problem_severity,
+            target_audience_clarity,
+            competition_intensity,
+            monetization_clarity,
+            venture_score,
+            risk_level,
+            readiness_label,
+            recommendations,
+            ai_analysis,
+            mentor_problem_clarity,
+            mentor_market_potential,
+            mentor_revenue_potential,
+            mentor_mvp_feasibility,
+            mentor_overall_score,
+            mentor_notes,
+            public_token,
+            public_hidden_at,
+            created_at
+        FROM idea_analyses
+        WHERE public_token = ? AND session_id = ? AND public_hidden_at IS NULL
+        """,
+        (public_token, session_id),
+    ).fetchone()
+
+    if row is None:
+        return None
+
+    analysis = dict(row)
+    analysis["recommendations"] = json.loads(analysis["recommendations"])
+    return analysis
+
+
 def delete_idea_analysis(analysis_id: int) -> None:
     """Delete one saved idea analysis."""
     get_db().execute("DELETE FROM idea_analyses WHERE id = ?", (analysis_id,))
+    get_db().commit()
+
+
+def hide_public_idea_analysis(analysis_id: int) -> None:
+    """Hide one analysis from the public user's history without removing admin data."""
+    get_db().execute(
+        "UPDATE idea_analyses SET public_hidden_at = CURRENT_TIMESTAMP WHERE id = ?",
+        (analysis_id,),
+    )
     get_db().commit()
 
 
