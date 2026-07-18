@@ -10,33 +10,51 @@ The Innovators
 
 ## Team Members
 
-- Özge Gül — Product Owner [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ozgegul)
-- Haticenur Yalman [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/haticenuryalman)
-- Ayşenur KADİM-Scrum Master [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/aysenurkadim)
-- Hakkı Kondak [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/hakkik)
-- ...
+## Team Members
+## Team Members
+
+| Name | Title | GitHub |
+| :---: | :---: | :---: |
+| Özge Gül | Product Owner | [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ozgegul) |
+| Ayşenur Kadim | Scrum Master | [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/aysenurkadim) |
+| Hakkı Kondak | Developer | [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/hakkik) |
+| Haticenur Yalman | Developer | [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/haticenuryalman) |
 
 ## Product Name
 
 VentureAgent
 
 ## Product Description
-Girişimcilerin ve girişimci adaylarının girişim fikirlerini doğrulayabilecekleri analiz edebilecekleri ve uygulanabilir iş fikirlerine dönüştürebilecekleri yapay zeka desteki web uygulaması
-...
+**VentureAgent — Fikirden lansmana kadar yapay zekâ destekli girişim ortağın.**
+
+VentureAgent, girişimcilerin ve girişimci adaylarının bir fikri hayata
+geçirirken ihtiyaç duyduğu tüm analiz ve planlama adımlarını tek bir çalışma
+alanında toplayan yapay zekâ destekli bir web uygulamasıdır. Kullanıcı fikrini
+serbest metinle anlatır; sistem bu fikri doğrular, pazar ve rakip açısından
+analiz eder ve uygulanabilir bir iş planına dönüştürür.
+
+Amacımız, erken aşamada pahalı ve zaman alan danışmanlık süreçlerini herkes için
+erişilebilir hâle getirmek; girişimcinin "bu fikir tutar mı?" sorusundan
+"nasıl başlarım?" adımına kadar olan yolu hızlandırmaktır.
 
 ## Product Features
 
--Fikir doğrular
-
--Market araştırması yapar
-
--Rakip araştırması yapar
-
--Pitch Deck ve asansör konuşması hazırlar
-
--İş modeli oluşturur
-
--MVP planlar
+- **Sohbet tabanlı fikir ortağı** — Fikrini serbestçe anlat, doğru sorularla
+  netleştir, Türkiye ve yurtdışı pazarlarını karşılaştır.
+- **Fikir analizi & Venture Score** — Fikri güçlü/zayıf yön ve risk açısından
+  değerlendirir, 0–100 arası bir pazar hazırlık skoru üretir.
+- **SWOT analizi** — Güçlü yön, zayıflık, fırsat ve tehditleri çıkarır.
+- **Rakip araştırması** — Olası rakipleri ve konumlandırma önerisini sunar.
+- **Gelir modeli önerisi** — Fikre uygun iş/gelir modellerini artı ve
+  eksileriyle önerir.
+- **MVP yol haritası** — MVP'den büyümeye giden aşamalı bir roadmap oluşturur.
+- **Kanban board** — MVP için yapılacak görevleri kart olarak üretir; sürükle-
+  bırak ile yönetilir.
+- **Yatırımcı tavsiyeleri** — Aşamaya uygun yatırımcı bulma stratejisi verir.
+- **Pitch üretici** — 30 saniyelik asansör konuşması ve yatırımcı sunumu
+  (pitch deck) taslağı hazırlar.
+- **Analiz paneli & geçmiş** — Yapılan analizleri saklar ve toplu metrikler
+  sunar.
 ...
 
 ## Target Audience
@@ -52,9 +70,9 @@ Girişimcilerin ve girişimci adaylarının girişim fikirlerini doğrulayabilec
 ...
 
 ## Product Backlog URL
+📋 [Notion Product Backlog →](https://app.notion.com/p/38d7f1e5cdc28080ad7ed1349d2fba38?v=38d7f1e5cdc280529c91000c00dd6be6&source=copy_link)
 
-https://app.notion.com/p/38d7f1e5cdc28080ad7ed1349d2fba38?v=38d7f1e5cdc280529c91000c00dd6be6&source=copy_link
-Rol dağılımı yaparken kişilerin hali hazırdaki bilgilerine göre , gönüllülük esasına göre ve herkese eşit olarak dağıtılmaya dikkat ettik.
+Sprint1 ve 2 için Rol dağılımı yaparken kişilerin hali hazırdaki bilgilerine göre , gönüllülük esasına göre, projeye ayırabileceği zamana göre dağıtılmaya dikkat ettik.
 ...
 
 ---
