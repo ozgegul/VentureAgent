@@ -271,7 +271,9 @@ Bir kaç User stroy detayını taskları içerecek şekilde aşağıdaki gibi pa
 
 </details>
 ---
-
+#Backlog dağıtım mantığı
+Sprint2 için Backlog dağıtım mantığı: Rol dağılımı yaparken kişilerin hali hazırdaki bilgilerine göre , gönüllülük esasına göre, projeye ayırabileceği zamana göre dağıtılmaya dikkat ettik.
+Bu sprinte başlarken ana hedefimiz web sitemizin temellerini atarak kullanıcı dostu arayüz tasarlamak ve AI agent ile bağlantı kurarak verilen cevaplara anlamlı bir çıktı elde etmekti. Önceliğimiz back end ve front end yapılarının kurulması ve daha sonra agent bağlantısının sağlanmasıydı. Bu önceliklere göre taskların dağıtımı yapılmıştır
 
 ---
 
