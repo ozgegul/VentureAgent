@@ -269,11 +269,12 @@ Bir kaç User stroy detayını taskları içerecek şekilde aşağıdaki gibi pa
 - Neleri geliştirebiliriz: Görev dağılımının daha dengeli olması, kalıcı veri saklama, test kapsamı, AI çıktılarının kullanıcı için daha anlamlı olması.
 - Planlanan aksiyonlar: Yapay zeka ajanını bize verdiği cevapları daha kullanıcı dostu yapmak ve kullanıcıyı yönlendirmesini sağlamak. Kullanıcı giriş çıkış panelinin bitirilmesi, admin panelinin bitirilmesi, pro özelliklerin(dosya ekleme ve ses gibi eklentilerin yapılması)
 
-</details>
----
-#Backlog dağıtım mantığı
+## Backlog dağıtım mantığı
 Sprint2 için Backlog dağıtım mantığı: Rol dağılımı yaparken kişilerin hali hazırdaki bilgilerine göre , gönüllülük esasına göre, projeye ayırabileceği zamana göre dağıtılmaya dikkat ettik.
 Bu sprinte başlarken ana hedefimiz web sitemizin temellerini atarak kullanıcı dostu arayüz tasarlamak ve AI agent ile bağlantı kurarak verilen cevaplara anlamlı bir çıktı elde etmekti. Önceliğimiz back end ve front end yapılarının kurulması ve daha sonra agent bağlantısının sağlanmasıydı. Bu önceliklere göre taskların dağıtımı yapılmıştır
+
+</details>
+
 
 ---
 
