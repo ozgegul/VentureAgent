@@ -229,6 +229,11 @@ User storyler kanban board a eklenmiştir. User storyler ile ilgili tasklar ise 
 <img width="1730" height="1022" alt="image" src="https://github.com/user-attachments/assets/e9bb8b3b-c2ee-4e52-84df-8bc985cf52a9" />
 <img width="1741" height="1017" alt="image" src="https://github.com/user-attachments/assets/d45e2295-4b89-4f22-b683-64134bd879a6" />
 
+Bir kaç User stroy detayını taskları içerecek şekilde aşağıdaki gibi paylaşıyorum
+<img width="785" height="1042" alt="image" src="https://github.com/user-attachments/assets/38046f51-07de-479a-b160-846494e90688" />
+<img width="750" height="972" alt="image" src="https://github.com/user-attachments/assets/2834fa20-6df1-447d-bb86-be781e9e079a" />
+<img width="803" height="943" alt="image" src="https://github.com/user-attachments/assets/4a141c1a-c6a9-48a2-a97c-040b34904f69" />
+
 
 
 ## Product Status
