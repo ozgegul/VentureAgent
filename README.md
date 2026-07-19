@@ -222,6 +222,12 @@ Geriye Kalan Notlar ekran görüntüleri ile aşağıda iletilmiştir
 
 
 ## Sprint Board Update
+User storyler kanban board a eklenmiştir. User storyler ile ilgili tasklar ise kanban bordun içerisindeki detayda mevcuttur.
+<img width="1446" height="885" alt="image" src="https://github.com/user-attachments/assets/20516cf5-4646-4149-9137-fb79fb3a559b" />
+<img width="1617" height="1031" alt="image" src="https://github.com/user-attachments/assets/522013d7-fd90-42d7-b5f8-9bcfffb9d102" />
+<img width="1546" height="997" alt="image" src="https://github.com/user-attachments/assets/ea1f742a-4dae-4579-935e-46a7bf317ac5" />
+<img width="1730" height="1022" alt="image" src="https://github.com/user-attachments/assets/e9bb8b3b-c2ee-4e52-84df-8bc985cf52a9" />
+<img width="1741" height="1017" alt="image" src="https://github.com/user-attachments/assets/d45e2295-4b89-4f22-b683-64134bd879a6" />
 
 
 
