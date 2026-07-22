@@ -12,6 +12,7 @@ yapı için ileride veritabanına taşınabilir.
 """
 
 from flask import Blueprint, render_template, request, jsonify, session
+from backend.auth import is_pro
 from backend.services.ai_client import ask_ai_conversation
 
 chat_bp = Blueprint("chat", __name__, template_folder="../../frontend/templates")
@@ -36,7 +37,7 @@ olduğunu belirt, uydurma kesin rakam verme."""
 @chat_bp.route("/", methods=["GET"])
 def chat_page():
     session.setdefault("chat_history", [])
-    return render_template("chat.html", history=session["chat_history"])
+    return render_template("chat.html", history=session["chat_history"], is_pro=is_pro())
 
 
 @chat_bp.route("/message", methods=["POST"])
