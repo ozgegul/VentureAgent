@@ -22,9 +22,15 @@ def create_app():
 
     init_app(app)
 
+    from backend.auth import load_logged_in_user
+
+    app.before_request(load_logged_in_user)
+
     # Blueprint'leri kaydet
     from backend.routes.main import main_bp
     from backend.routes.ai_test import ai_test_bp
+    from backend.routes.auth import auth_bp
+    from backend.routes.admin import admin_bp
     from backend.routes.chat import chat_bp
     from backend.routes.dashboard import dashboard_bp
     from backend.routes.history import history_bp
@@ -39,6 +45,8 @@ def create_app():
 
     app.register_blueprint(main_bp)
     app.register_blueprint(ai_test_bp, url_prefix="/ai-test")
+    app.register_blueprint(auth_bp, url_prefix="/auth")
+    app.register_blueprint(admin_bp, url_prefix="/admin")
     app.register_blueprint(chat_bp, url_prefix="/chat")
     app.register_blueprint(dashboard_bp, url_prefix="/dashboard")
     app.register_blueprint(history_bp, url_prefix="/history")
