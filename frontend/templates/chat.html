@@ -25,5 +25,16 @@
         <button id="chat-reset" type="button">Sohbeti sıfırla</button>
     </div>
 
+    {% if is_pro %}
+        <div class="locked-feature">
+            <span>📎 Dosya ve 🎙️ ses ile mesaj gönderme (Pro) — yakında burada aktif olacak.</span>
+        </div>
+    {% else %}
+        <div class="locked-feature">
+            <span>🔒 Dosya ve ses ile mesaj gönderme yalnızca Pro hesaplarda kullanılabilir.</span>
+            <a href="{{ url_for('auth.register') if not g.user else url_for('main.index') }}">Pro'ya geç →</a>
+        </div>
+    {% endif %}
+
     <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
 {% endblock %}

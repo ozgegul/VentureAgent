@@ -53,4 +53,43 @@
             <a href="{{ url_for('idea.idea_form') }}" class="cta-button">Fikir Analiz Et →</a>
         </div>
     {% endif %}
+
+    <div class="section-divider">Diğer Modül Sonuçları</div>
+
+    {% if module_results %}
+        <div class="history-table-wrap">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Modül</th>
+                        <th>Fikir</th>
+                        <th>Tarih</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in module_results %}
+                        <tr>
+                            <td>{{ result.label }}</td>
+                            <td>{{ result.idea }}</td>
+                            <td>{{ result.created_at }}</td>
+                            <td>
+                                <div class="table-actions">
+                                    <a href="{{ url_for('history.module_result_detail', result_id=result.id) }}">Detay</a>
+                                    <form method="POST" action="{{ url_for('history.delete_module_result_item', result_id=result.id) }}">
+                                        <button type="submit" class="link-danger" onclick="return confirm('Bu kaydı silmek istediğine emin misin?')">Sil</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <h2>Henüz kayıt yok</h2>
+            <p>SWOT, rakip, gelir modeli, roadmap, kanban, yatırımcı veya pitch sayfalarından birini kullanınca sonuçlar burada listelenir.</p>
+        </div>
+    {% endif %}
 {% endblock %}

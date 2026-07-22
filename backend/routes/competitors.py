@@ -8,6 +8,8 @@ entegre edilmesi önerilir — bkz. README.
 """
 
 from flask import Blueprint, render_template, request
+from backend.auth import current_user, login_required
+from backend.database import save_module_result
 from backend.services.ai_client import ask_ai, safe_parse_json
 
 competitors_bp = Blueprint("competitors", __name__, template_folder="../../frontend/templates")
@@ -27,11 +29,13 @@ için olası rakipleri ve konumlandırma önerisini üret. Cevabını SADECE şu
 
 
 @competitors_bp.route("/", methods=["GET"])
+@login_required
 def competitors_form():
     return render_template("competitors.html", result=None)
 
 
 @competitors_bp.route("/analyze", methods=["POST"])
+@login_required
 def analyze_competitors():
     idea = request.form.get("idea", "").strip()
     sector = request.form.get("sector", "").strip()
@@ -53,4 +57,11 @@ def analyze_competitors():
     except Exception as exc:  # noqa: BLE001
         return render_template("competitors.html", result=None, error=f"Analiz sırasında hata oluştu: {exc}")
 
+    save_module_result(
+        user_id=current_user()["id"],
+        module="competitors",
+        idea=idea,
+        input_data={"sector": sector, "region": region},
+        result_data=result,
+    )
     return render_template("competitors.html", result=result)

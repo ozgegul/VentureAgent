@@ -6,6 +6,7 @@ istek atan bir sonuç sayfası (POST).
 """
 
 from flask import Blueprint, render_template, request
+from backend.auth import current_user, login_required
 from backend.database import save_idea_analysis
 from backend.services.ai_client import ask_ai
 from data_science.pipelines.market_scoring import StartupSignal, build_venture_score
@@ -17,6 +18,7 @@ fikrini analiz et. Net, yapıcı ve uygulanabilir geri bildirim ver. Türkçe ce
 
 
 @idea_bp.route("/", methods=["GET"])
+@login_required
 def idea_form():
     """Fikir giriş formunu gösterir."""
     return render_template("idea.html", analysis=None, venture_score=None)
@@ -31,8 +33,10 @@ def _form_score(name: str, default: int = 3) -> int:
 
 
 @idea_bp.route("/analyze", methods=["POST"])
+@login_required
 def analyze_idea():
     """Formdan gelen fikri Claude'a gönderir ve analiz sonucunu gösterir."""
+    user_id = current_user()["id"]
     idea = request.form.get("idea", "").strip()
     problem = request.form.get("problem", "").strip()
     target_audience = request.form.get("target_audience", "").strip()
@@ -76,6 +80,7 @@ Bu fikri şu başlıklarla değerlendir:
         analysis = ask_ai(user_prompt=user_prompt, system_prompt=SYSTEM_PROMPT, max_tokens=1200)
     except Exception as exc:  # noqa: BLE001
         save_idea_analysis(
+            user_id=user_id,
             idea=idea,
             problem=problem,
             target_audience=target_audience,
@@ -87,6 +92,7 @@ Bu fikri şu başlıklarla değerlendir:
         return render_template("idea.html", analysis=None, venture_score=venture_score, error=str(exc))
 
     save_idea_analysis(
+        user_id=user_id,
         idea=idea,
         problem=problem,
         target_audience=target_audience,

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}{{ result.label }} — VentureAgent{% endblock %}
+
+{% block content %}
+    <span class="eyebrow">{{ result.label }}</span>
+    <h1>{{ result.idea }}</h1>
+    <p class="subtitle">{{ result.created_at }} tarihinde kaydedildi.</p>
+
+    <div class="result">
+        <h2>Sonuç</h2>
+        <pre>{{ result.result_data | tojson(indent=2) }}</pre>
+    </div>
+
+    <div class="detail-actions">
+        <a href="{{ url_for('history.history_page') }}">← Geçmişe dön</a>
+        <form method="POST" action="{{ url_for('history.delete_module_result_item', result_id=result.id) }}">
+            <button type="submit" class="danger-button" onclick="return confirm('Bu kaydı silmek istediğine emin misin?')">Kaydı Sil</button>
+        </form>
+    </div>
+{% endblock %}

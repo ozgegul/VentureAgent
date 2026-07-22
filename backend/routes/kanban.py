@@ -11,6 +11,8 @@ yenilendiğinde sıfırlanır. Kalıcı depolama istenirse bir veritabanı
 """
 
 from flask import Blueprint, render_template, request
+from backend.auth import current_user, login_required
+from backend.database import save_module_result
 from backend.services.ai_client import ask_ai, safe_parse_json
 
 kanban_bp = Blueprint("kanban", __name__, template_folder="../../frontend/templates")
@@ -30,11 +32,13 @@ tasarımını oluştur", "İlk 10 kullanıcı görüşmesini yap"). Türkçe yaz
 
 
 @kanban_bp.route("/", methods=["GET"])
+@login_required
 def kanban_form():
     return render_template("kanban.html", cards=None)
 
 
 @kanban_bp.route("/generate", methods=["POST"])
+@login_required
 def generate_kanban():
     idea = request.form.get("idea", "").strip()
 
@@ -55,4 +59,17 @@ def generate_kanban():
     except Exception as exc:  # noqa: BLE001
         return render_template("kanban.html", cards=None, error=f"Oluşturma sırasında hata oluştu: {exc}")
 
-    return render_template("kanban.html", cards=cards)
+    save_module_result(
+        user_id=current_user()["id"],
+        module="kanban",
+        idea=idea,
+        input_data=None,
+        result_data={"cards": cards},
+    )
+    return render_template(
+        "kanban.html",
+        cards=cards,
+        note="Kartlar oluşturuldu ve geçmişine kaydedildi. Sürükle-bırak konumları şu an için "
+        "yalnızca bu oturumda tarayıcıda tutulur; sayfa yenilenirse konumlar sıfırlanır "
+        "(kalıcı konum takibi ayrı bir geliştirme olarak planlanabilir).",
+    )
