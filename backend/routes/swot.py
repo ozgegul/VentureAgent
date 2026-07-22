@@ -4,6 +4,8 @@ Claude'dan yapılandırılmış JSON istenir (json_mode=True) ve 2x2 grid olarak
 """
 
 from flask import Blueprint, render_template, request
+from backend.auth import current_user, login_required
+from backend.database import save_module_result
 from backend.services.ai_client import ask_ai, safe_parse_json
 
 swot_bp = Blueprint("swot", __name__, template_folder="../../frontend/templates")
@@ -22,11 +24,13 @@ Her liste 3-5 madde içersin, maddeler kısa ve net olsun. Türkçe yaz."""
 
 
 @swot_bp.route("/", methods=["GET"])
+@login_required
 def swot_form():
     return render_template("swot.html", swot=None)
 
 
 @swot_bp.route("/analyze", methods=["POST"])
+@login_required
 def analyze_swot():
     idea = request.form.get("idea", "").strip()
     sector = request.form.get("sector", "").strip()
@@ -47,4 +51,11 @@ def analyze_swot():
     except Exception as exc:  # noqa: BLE001
         return render_template("swot.html", swot=None, error=f"Analiz sırasında hata oluştu: {exc}")
 
+    save_module_result(
+        user_id=current_user()["id"],
+        module="swot",
+        idea=idea,
+        input_data={"sector": sector},
+        result_data=swot,
+    )
     return render_template("swot.html", swot=swot)

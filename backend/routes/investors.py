@@ -1,6 +1,8 @@
 """Yatırımcı bulma tavsiyeleri modülü."""
 
 from flask import Blueprint, render_template, request
+from backend.auth import current_user, login_required
+from backend.database import save_module_result
 from backend.services.ai_client import ask_ai
 
 investors_bp = Blueprint("investors", __name__, template_folder="../../frontend/templates")
@@ -15,11 +17,13 @@ Türkçe, net ve uygulanabilir yaz."""
 
 
 @investors_bp.route("/", methods=["GET"])
+@login_required
 def investors_form():
     return render_template("investors.html", advice=None)
 
 
 @investors_bp.route("/advise", methods=["POST"])
+@login_required
 def advise_investors():
     idea = request.form.get("idea", "").strip()
     stage = request.form.get("stage", "").strip()
@@ -41,4 +45,11 @@ def advise_investors():
     except Exception as exc:  # noqa: BLE001
         return render_template("investors.html", advice=None, error=str(exc))
 
+    save_module_result(
+        user_id=current_user()["id"],
+        module="investors",
+        idea=idea,
+        input_data={"stage": stage, "amount": amount, "geography": geography},
+        result_data={"advice": advice},
+    )
     return render_template("investors.html", advice=advice)

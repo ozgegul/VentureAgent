@@ -1,6 +1,8 @@
 """MVP roadmap oluşturma modülü."""
 
 from flask import Blueprint, render_template, request
+from backend.auth import current_user, login_required
+from backend.database import save_module_result
 from backend.services.ai_client import ask_ai, safe_parse_json
 
 roadmap_bp = Blueprint("roadmap", __name__, template_folder="../../frontend/templates")
@@ -20,11 +22,13 @@ Toplam 6-10 madde üret, mantıklı sırada. Türkçe yaz."""
 
 
 @roadmap_bp.route("/", methods=["GET"])
+@login_required
 def roadmap_form():
     return render_template("roadmap.html", result=None)
 
 
 @roadmap_bp.route("/generate", methods=["POST"])
+@login_required
 def generate_roadmap():
     idea = request.form.get("idea", "").strip()
     tech_capacity = request.form.get("tech_capacity", "").strip()
@@ -50,4 +54,11 @@ def generate_roadmap():
     except Exception as exc:  # noqa: BLE001
         return render_template("roadmap.html", result=None, error=f"Oluşturma sırasında hata oluştu: {exc}")
 
+    save_module_result(
+        user_id=current_user()["id"],
+        module="roadmap",
+        idea=idea,
+        input_data={"tech_capacity": tech_capacity, "budget": budget},
+        result_data=result,
+    )
     return render_template("roadmap.html", result=result)
