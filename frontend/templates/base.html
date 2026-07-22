@@ -18,7 +18,27 @@
 </head>
 <body>
     <nav class="navbar">
-        <a href="{{ url_for('main.index') }}" class="brand">VentureAgent</a>
+        <div class="navbar-top">
+            <a href="{{ url_for('main.index') }}" class="brand">VentureAgent</a>
+            <div class="nav-account">
+                <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Karanlık/aydınlık mod" title="Karanlık/aydınlık mod">
+                    <span class="theme-toggle-icon"></span>
+                </button>
+                {% if g.user %}
+                    <span class="user-pill">
+                        {{ g.user.name }}
+                        {% if g.user.role == 'pro' %}<span class="pro-badge">PRO</span>{% endif %}
+                        {% if g.user.role == 'admin' %}<span class="pro-badge admin-badge">ADMIN</span>{% endif %}
+                    </span>
+                    <form method="POST" action="{{ url_for('auth.logout') }}" class="inline-form">
+                        <button type="submit" class="secondary-button small">Çıkış</button>
+                    </form>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="secondary-button small">Giriş</a>
+                    <a href="{{ url_for('auth.register') }}" class="cta-button small">Kayıt Ol</a>
+                {% endif %}
+            </div>
+        </div>
         <div class="nav-links">
             <a href="{{ url_for('chat.chat_page') }}">Sohbet</a>
             <a href="{{ url_for('idea.idea_form') }}">Fikir Analizi</a>
@@ -34,24 +54,6 @@
             <a href="{{ url_for('ai_test.ai_test_page') }}">AI Test</a>
             {% if g.user and g.user.role == 'admin' %}
                 <a href="{{ url_for('admin.admin_dashboard') }}">Admin</a>
-            {% endif %}
-        </div>
-        <div class="nav-account">
-            <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Karanlık/aydınlık mod" title="Karanlık/aydınlık mod">
-                <span class="theme-toggle-icon"></span>
-            </button>
-            {% if g.user %}
-                <span class="user-pill">
-                    {{ g.user.name }}
-                    {% if g.user.role == 'pro' %}<span class="pro-badge">PRO</span>{% endif %}
-                    {% if g.user.role == 'admin' %}<span class="pro-badge admin-badge">ADMIN</span>{% endif %}
-                </span>
-                <form method="POST" action="{{ url_for('auth.logout') }}" class="inline-form">
-                    <button type="submit" class="secondary-button small">Çıkış</button>
-                </form>
-            {% else %}
-                <a href="{{ url_for('auth.login') }}" class="secondary-button small">Giriş</a>
-                <a href="{{ url_for('auth.register') }}" class="cta-button small">Kayıt Ol</a>
             {% endif %}
         </div>
     </nav>

@@ -7,8 +7,8 @@ import re
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from backend.auth import current_user
-from backend.database import create_user, get_user_by_email
+from backend.auth import current_user, login_required
+from backend.database import create_user, get_user_by_email, update_user_role
 
 auth_bp = Blueprint("auth", __name__, template_folder="../../frontend/templates")
 
@@ -88,3 +88,20 @@ def logout():
     session.clear()
     flash("Çıkış yapıldı.", "success")
     return redirect(url_for("main.index"))
+
+
+@auth_bp.route("/upgrade-to-pro", methods=["POST"])
+@login_required
+def upgrade_to_pro():
+    """Kendi kendine Pro'ya geçiş — GEÇİCİ/DEMO amaçlıdır.
+
+    Gerçek bir ödeme entegrasyonu (Stripe/iyzico vb.) bağlanana kadar,
+    ürünü test edebilmek için herkesin kendi rolünü Pro yapmasına izin
+    veriyoruz. Ödeme akışı eklenince bu route ya kaldırılmalı ya da
+    başarılı ödeme sonrası webhook'tan çağrılmalıdır.
+    """
+    user = current_user()
+    if user["role"] == "free":
+        update_user_role(user["id"], "pro")
+        flash("Pro'ya geçtin! (Demo yükseltme — gerçek ödeme entegrasyonu eklenene kadar ücretsiz.)", "success")
+    return redirect(request.referrer or url_for("main.index"))

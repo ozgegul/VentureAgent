@@ -29,10 +29,17 @@
         <div class="locked-feature">
             <span>📎 Dosya ve 🎙️ ses ile mesaj gönderme (Pro) — yakında burada aktif olacak.</span>
         </div>
+    {% elif g.user %}
+        <div class="locked-feature">
+            <span>🔒 Dosya ve ses ile mesaj gönderme yalnızca Pro hesaplarda kullanılabilir.</span>
+            <form method="POST" action="{{ url_for('auth.upgrade_to_pro') }}" class="inline-form">
+                <button type="submit" class="link-danger" style="color: var(--teal); font-weight:800;">Pro'ya geç →</button>
+            </form>
+        </div>
     {% else %}
         <div class="locked-feature">
             <span>🔒 Dosya ve ses ile mesaj gönderme yalnızca Pro hesaplarda kullanılabilir.</span>
-            <a href="{{ url_for('auth.register') if not g.user else url_for('main.index') }}">Pro'ya geç →</a>
+            <a href="{{ url_for('auth.register') }}">Kayıt ol →</a>
         </div>
     {% endif %}
 

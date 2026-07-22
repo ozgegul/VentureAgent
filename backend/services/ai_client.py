@@ -11,7 +11,7 @@ from anthropic import Anthropic
 
 DEFAULT_PROVIDER = "gemini"
 CLAUDE_MODEL = "claude-sonnet-5"
-GEMINI_MODEL = "gemini-2.5-flash"
+GEMINI_MODEL = "gemini-3.5-flash"
 GEMINI_API_URL = (
     f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
 )
@@ -139,7 +139,7 @@ def _ask_gemini(
             "temperature": 0.4,
             "maxOutputTokens": max_tokens,
             "thinkingConfig": {
-                "thinkingBudget": 0,
+                "thinkingLevel": "low",
             },
         },
     }
