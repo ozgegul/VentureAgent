@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Paneli — VentureAgent{% endblock %}
+
+{% block content %}
+    <h1>Admin Paneli</h1>
+    <p class="subtitle">Platform genelinde kullanıcı ve kullanım metrikleri.</p>
+
+    <div class="metric-grid">
+        <div class="metric-card">
+            <span>Toplam Kullanıcı</span>
+            <strong>{{ metrics.users.total_users or 0 }}</strong>
+        </div>
+        <div class="metric-card">
+            <span>Pro Kullanıcı</span>
+            <strong>{{ metrics.users.pro_users or 0 }}</strong>
+        </div>
+        <div class="metric-card">
+            <span>Toplam Fikir Analizi</span>
+            <strong>{{ metrics.analyses.total_analyses or 0 }}</strong>
+        </div>
+        <div class="metric-card">
+            <span>Ortalama Venture Score</span>
+            <strong>{{ metrics.analyses.average_score or "—" }}</strong>
+        </div>
+    </div>
+
+    {% if metrics.module_usage %}
+        <div class="dashboard-panel">
+            <h2>Modül Kullanımı</h2>
+            {% set max_count = metrics.module_usage[0].count if metrics.module_usage else 1 %}
+            {% for row in metrics.module_usage %}
+                <div class="bar-row">
+                    <span>{{ row.module }}</span>
+                    <div class="bar-track"><div class="bar-fill" style="width: {{ (row.count / max_count * 100) | round(1) }}%"></div></div>
+                    <strong>{{ row.count }}</strong>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="section-divider">Kullanıcılar</div>
+
+    <div class="history-table-wrap">
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Ad</th>
+                    <th>E-posta</th>
+                    <th>Rol</th>
+                    <th>Durum</th>
+                    <th>Kayıt Tarihi</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            {% if user.role == 'admin' %}<span class="pro-badge admin-badge">ADMIN</span>
+                            {% elif user.role == 'pro' %}<span class="pro-badge">PRO</span>
+                            {% else %}Free{% endif %}
+                        </td>
+                        <td>{{ "Aktif" if user.is_active else "Devre dışı" }}</td>
+                        <td>{{ user.created_at }}</td>
+                        <td class="table-actions">
+                            <form method="POST" action="{{ url_for('admin.change_role', user_id=user.id) }}" class="inline-form">
+                                <select name="role" class="role-select" onchange="this.form.submit()">
+                                    {% for role in roles %}
+                                        <option value="{{ role }}" {{ "selected" if role == user.role else "" }}>{{ role }}</option>
+                                    {% endfor %}
+                                </select>
+                            </form>
+                            <form method="POST" action="{{ url_for('admin.toggle_active', user_id=user.id) }}" class="inline-form">
+                                <button type="submit" class="link-danger">
+                                    {{ "Devre dışı bırak" if user.is_active else "Aktifleştir" }}
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
