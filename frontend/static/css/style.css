@@ -98,22 +98,23 @@ code {
 .navbar {
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 20;
     display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-    padding: 0.95rem 2rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.9rem;
+    padding: 0.85rem 2rem;
     border-bottom: 1px solid var(--line);
-    background: rgba(255, 250, 242, 0.88);
+    background: var(--surface);
     backdrop-filter: blur(16px);
 }
 
 .navbar-top {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 0.7rem;
-    flex-wrap: nowrap;
+    gap: 1.4rem;
+    min-width: 0;
+    flex: 1;
 }
 
 .brand {
@@ -126,7 +127,7 @@ code {
 .brand::after { content: " / cockpit"; color: var(--coral); font-family: var(--font-body); font-size: 0.75rem; font-weight: 700; }
 .brand:hover { color: var(--teal-dark); }
 
-.nav-links { display: flex; flex-wrap: wrap; gap: 0.45rem; align-items: center; }
+.nav-links { display: flex; flex-wrap: wrap; gap: 0.3rem; align-items: center; min-width: 0; }
 .nav-links a {
     color: var(--muted);
     border: 1px solid transparent;
@@ -134,8 +135,53 @@ code {
     padding: 0.38rem 0.68rem;
     font-size: 0.78rem;
     font-weight: 700;
+    white-space: nowrap;
 }
 .nav-links a:hover { color: var(--ink); border-color: var(--line-strong); background: var(--surface-strong); }
+
+/* Analizler dropdown (native <details>/<summary>, no JS needed) */
+.nav-dropdown { position: relative; }
+.nav-dropdown summary {
+    list-style: none;
+    cursor: pointer;
+    color: var(--muted);
+    border: 1px solid transparent;
+    border-radius: 999px;
+    padding: 0.38rem 0.68rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    white-space: nowrap;
+}
+.nav-dropdown summary::-webkit-details-marker { display: none; }
+.nav-dropdown summary:hover { color: var(--ink); border-color: var(--line-strong); background: var(--surface-strong); }
+.nav-dropdown[open] summary { color: var(--ink); background: var(--surface-strong); border-color: var(--line-strong); }
+.nav-dropdown summary .chevron { font-size: 0.65rem; transition: transform 0.15s ease; }
+.nav-dropdown[open] summary .chevron { transform: rotate(180deg); }
+.nav-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    background: var(--surface-strong);
+    border: 1px solid var(--line-strong);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 0.4rem;
+    display: grid;
+    gap: 0.15rem;
+    min-width: 190px;
+}
+.nav-dropdown-menu a {
+    color: var(--ink);
+    padding: 0.5rem 0.7rem;
+    border-radius: 8px;
+    font-size: 0.83rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.nav-dropdown-menu a:hover { background: var(--bg); color: var(--teal-dark); }
 
 .nav-account { display: flex; align-items: center; gap: 0.55rem; flex-shrink: 0; flex-wrap: nowrap; }
 .theme-toggle {
@@ -207,22 +253,33 @@ code {
 .auth-shell h1 { font-size: 1.9rem; }
 .auth-switch { margin-top: 1.2rem; color: var(--muted); font-size: 0.88rem; }
 
-.locked-feature {
+.pro-upsell {
     margin-top: 1.5rem;
     max-width: 760px;
-    background: var(--surface-strong);
-    border: 1px dashed var(--line-strong);
+    background: linear-gradient(135deg, var(--surface-strong), var(--surface));
+    border: 1px solid var(--line-strong);
     border-radius: var(--radius);
-    padding: 1rem 1.2rem;
-    color: var(--muted);
-    font-size: 0.88rem;
+    padding: 1.1rem 1.3rem;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 1rem;
-    flex-wrap: wrap;
+    box-shadow: var(--shadow);
 }
-.locked-feature a { font-weight: 800; }
+.pro-upsell-icon {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--amber);
+    display: grid;
+    place-items: center;
+    font-size: 1.2rem;
+}
+.pro-upsell-body { flex: 1; }
+.pro-upsell strong { display: block; color: var(--ink); font-size: 0.95rem; margin-bottom: 0.15rem; }
+.pro-upsell p { margin: 0; color: var(--muted); font-size: 0.83rem; }
+.pro-upsell-active { background: linear-gradient(135deg, rgba(0, 124, 114, 0.08), var(--surface)); }
+.pro-upsell-active .pro-upsell-icon { background: var(--teal); color: #fffaf2; }
 
 .role-select { padding: 0.3rem 0.5rem; border-radius: 6px; border: 1px solid var(--line-strong); background: var(--surface-strong); color: var(--ink); font-family: inherit; }
 
@@ -413,6 +470,8 @@ code {
 
 .form { margin-top: 1.5rem; max-width: 760px; }
 .form label { display: block; margin-top: 1rem; color: var(--ink); font-size: 0.85rem; font-weight: 800; }
+.field-hint { display: block; margin-top: 0.3rem; color: var(--muted); font-size: 0.76rem; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .form textarea,
 .form input,
 .form select,
@@ -798,8 +857,8 @@ code {
 }
 
 @media (max-width: 700px) {
-    .navbar { padding: 0.9rem 1rem; }
-    .navbar-top { gap: 0.4rem; }
+    .navbar { padding: 0.9rem 1rem; flex-wrap: wrap; row-gap: 0.6rem; }
+    .navbar-top { flex-wrap: wrap; gap: 0.5rem 0.8rem; }
     .brand { font-size: 1.02rem; }
     .brand::after { display: none; }
     .nav-account { gap: 0.35rem; }
@@ -807,6 +866,7 @@ code {
     .user-pill .pro-badge { display: none; }
     .cta-button.small, .secondary-button.small { padding: 0.4rem 0.6rem; font-size: 0.72rem; }
     .theme-toggle { width: 32px; height: 32px; }
+    .nav-dropdown-menu { left: auto; right: 0; }
     .container { padding: 2rem 1rem 3rem; }
     .swot-grid,
     .kanban-board,

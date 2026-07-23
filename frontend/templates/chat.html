@@ -26,20 +26,30 @@
     </div>
 
     {% if is_pro %}
-        <div class="locked-feature">
-            <span>📎 Dosya ve 🎙️ ses ile mesaj gönderme (Pro) — yakında burada aktif olacak.</span>
+        <div class="pro-upsell pro-upsell-active">
+            <div class="pro-upsell-icon">✓</div>
+            <div>
+                <strong>Pro hesabındasın</strong>
+                <p>Dosya ve ses ile mesaj gönderme çok yakında burada aktif olacak.</p>
+            </div>
         </div>
     {% elif g.user %}
-        <div class="locked-feature">
-            <span>🔒 Dosya ve ses ile mesaj gönderme yalnızca Pro hesaplarda kullanılabilir.</span>
-            <form method="POST" action="{{ url_for('auth.upgrade_to_pro') }}" class="inline-form">
-                <button type="submit" class="link-danger" style="color: var(--teal); font-weight:800;">Pro'ya geç →</button>
-            </form>
+        <div class="pro-upsell">
+            <div class="pro-upsell-icon">🔒</div>
+            <div class="pro-upsell-body">
+                <strong>Dosya ve ses ile mesaj gönder</strong>
+                <p>Belge yükle, sesli not bırak — Pro hesaplarda kullanılabilir.</p>
+            </div>
+            <a href="{{ url_for('auth.upgrade_page') }}" class="cta-button small">Pro'ya geç →</a>
         </div>
     {% else %}
-        <div class="locked-feature">
-            <span>🔒 Dosya ve ses ile mesaj gönderme yalnızca Pro hesaplarda kullanılabilir.</span>
-            <a href="{{ url_for('auth.register') }}">Kayıt ol →</a>
+        <div class="pro-upsell">
+            <div class="pro-upsell-icon">🔒</div>
+            <div class="pro-upsell-body">
+                <strong>Dosya ve ses ile mesaj gönder</strong>
+                <p>Bu özellik Pro hesaplarda kullanılabilir. Önce ücretsiz bir hesap oluştur.</p>
+            </div>
+            <a href="{{ url_for('auth.register') }}" class="cta-button small">Kayıt ol →</a>
         </div>
     {% endif %}
 
