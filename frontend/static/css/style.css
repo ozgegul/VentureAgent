@@ -123,7 +123,12 @@ code {
     font-size: 1.2rem;
     font-weight: 600;
     flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
 }
+.brand-logo { height: 28px; width: auto; display: block; }
+[data-theme="dark"] .brand-logo { filter: invert(1); }
 .brand::after { content: " / cockpit"; color: var(--coral); font-family: var(--font-body); font-size: 0.75rem; font-weight: 700; }
 .brand:hover { color: var(--teal-dark); }
 
@@ -289,6 +294,9 @@ code {
     padding: 3.2rem 1.4rem 4rem;
     position: relative;
 }
+
+.hero-logo { height: 64px; width: auto; display: block; margin-bottom: 1.4rem; }
+[data-theme="dark"] .hero-logo { filter: invert(1); }
 
 .eyebrow {
     display: inline-flex;
