@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Pro'ya Geç — VentureAgent{% endblock %}
+
+{% block content %}
+    <div class="auth-shell">
+        <span class="eyebrow">Pro'ya Yükselt</span>
+        <h1>Ödeme Bilgileri</h1>
+        <p class="subtitle">
+            Bu bir <strong>demo ödeme sayfasıdır</strong> — gerçek bir kart bilgisi
+            saklanmaz veya tahsil edilmez. Gerçek ödeme sağlayıcısı (Stripe/iyzico vb.)
+            bağlanana kadar formu doldurup göndermen Pro erişimini açar.
+        </p>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('auth.process_upgrade') }}" class="form">
+            <label for="card_name">Kart Üzerindeki İsim</label>
+            <input type="text" id="card_name" name="card_name" value="{{ card_name or '' }}" placeholder="Ad Soyad" required>
+
+            <label for="card_number">Kart Numarası</label>
+            <input type="text" id="card_number" name="card_number" placeholder="0000 0000 0000 0000" maxlength="19" inputmode="numeric" required>
+            <span class="field-hint">16 haneli herhangi bir sayı — demo amaçlı, gerçek kart doğrulaması yapılmaz.</span>
+
+            <div class="form-row">
+                <div>
+                    <label for="expiry">Son Kullanma (AA/YY)</label>
+                    <input type="text" id="expiry" name="expiry" placeholder="12/28" maxlength="5" required>
+                </div>
+                <div>
+                    <label for="cvv">CVV</label>
+                    <input type="text" id="cvv" name="cvv" placeholder="123" maxlength="4" inputmode="numeric" required>
+                </div>
+            </div>
+
+            <button type="submit">Ödemeyi Tamamla (Demo)</button>
+        </form>
+
+        <p class="auth-switch">
+            <a href="{{ url_for('main.index') }}">← Vazgeç, ana sayfaya dön</a>
+        </p>
+    </div>
+{% endblock %}

@@ -20,40 +20,45 @@
     <nav class="navbar">
         <div class="navbar-top">
             <a href="{{ url_for('main.index') }}" class="brand">VentureAgent</a>
-            <div class="nav-account">
-                <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Karanlık/aydınlık mod" title="Karanlık/aydınlık mod">
-                    <span class="theme-toggle-icon"></span>
-                </button>
-                {% if g.user %}
-                    <span class="user-pill">
-                        {{ g.user.name }}
-                        {% if g.user.role == 'pro' %}<span class="pro-badge">PRO</span>{% endif %}
-                        {% if g.user.role == 'admin' %}<span class="pro-badge admin-badge">ADMIN</span>{% endif %}
-                    </span>
-                    <form method="POST" action="{{ url_for('auth.logout') }}" class="inline-form">
-                        <button type="submit" class="secondary-button small">Çıkış</button>
-                    </form>
-                {% else %}
-                    <a href="{{ url_for('auth.login') }}" class="secondary-button small">Giriş</a>
-                    <a href="{{ url_for('auth.register') }}" class="cta-button small">Kayıt Ol</a>
+            <div class="nav-links">
+                <a href="{{ url_for('chat.chat_page') }}">Sohbet</a>
+                <details class="nav-dropdown">
+                    <summary>Analizler <span class="chevron">▾</span></summary>
+                    <div class="nav-dropdown-menu">
+                        <a href="{{ url_for('idea.idea_form') }}">Fikir Analizi</a>
+                        <a href="{{ url_for('swot.swot_form') }}">SWOT</a>
+                        <a href="{{ url_for('competitors.competitors_form') }}">Rakipler</a>
+                        <a href="{{ url_for('revenue.revenue_form') }}">Gelir Modeli</a>
+                        <a href="{{ url_for('roadmap.roadmap_form') }}">Roadmap</a>
+                        <a href="{{ url_for('kanban.kanban_form') }}">Kanban</a>
+                        <a href="{{ url_for('investors.investors_form') }}">Yatırımcı</a>
+                        <a href="{{ url_for('pitch.pitch_form') }}">Pitch</a>
+                        <a href="{{ url_for('ai_test.ai_test_page') }}">AI Test</a>
+                    </div>
+                </details>
+                <a href="{{ url_for('dashboard.dashboard_page') }}">Dashboard</a>
+                <a href="{{ url_for('history.history_page') }}">Geçmiş</a>
+                {% if g.user and g.user.role == 'admin' %}
+                    <a href="{{ url_for('admin.admin_dashboard') }}">Admin</a>
                 {% endif %}
             </div>
         </div>
-        <div class="nav-links">
-            <a href="{{ url_for('chat.chat_page') }}">Sohbet</a>
-            <a href="{{ url_for('idea.idea_form') }}">Fikir Analizi</a>
-            <a href="{{ url_for('swot.swot_form') }}">SWOT</a>
-            <a href="{{ url_for('competitors.competitors_form') }}">Rakipler</a>
-            <a href="{{ url_for('revenue.revenue_form') }}">Gelir Modeli</a>
-            <a href="{{ url_for('roadmap.roadmap_form') }}">Roadmap</a>
-            <a href="{{ url_for('kanban.kanban_form') }}">Kanban</a>
-            <a href="{{ url_for('investors.investors_form') }}">Yatırımcı</a>
-            <a href="{{ url_for('pitch.pitch_form') }}">Pitch</a>
-            <a href="{{ url_for('dashboard.dashboard_page') }}">Dashboard</a>
-            <a href="{{ url_for('history.history_page') }}">Geçmiş</a>
-            <a href="{{ url_for('ai_test.ai_test_page') }}">AI Test</a>
-            {% if g.user and g.user.role == 'admin' %}
-                <a href="{{ url_for('admin.admin_dashboard') }}">Admin</a>
+        <div class="nav-account">
+            <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Karanlık/aydınlık mod" title="Karanlık/aydınlık mod">
+                <span class="theme-toggle-icon"></span>
+            </button>
+            {% if g.user %}
+                <span class="user-pill">
+                    {{ g.user.name }}
+                    {% if g.user.role == 'pro' %}<span class="pro-badge">PRO</span>{% endif %}
+                    {% if g.user.role == 'admin' %}<span class="pro-badge admin-badge">ADMIN</span>{% endif %}
+                </span>
+                <form method="POST" action="{{ url_for('auth.logout') }}" class="inline-form">
+                    <button type="submit" class="secondary-button small">Çıkış</button>
+                </form>
+            {% else %}
+                <a href="{{ url_for('auth.login') }}" class="secondary-button small">Giriş</a>
+                <a href="{{ url_for('auth.register') }}" class="cta-button small">Kayıt Ol</a>
             {% endif %}
         </div>
     </nav>
@@ -85,6 +90,20 @@
                 html.setAttribute("data-theme", next);
                 localStorage.setItem("venture-theme", next);
                 syncIcon();
+            });
+        })();
+    </script>
+    <script>
+        (function () {
+            document.querySelectorAll(".nav-dropdown").forEach(function (dropdown) {
+                dropdown.addEventListener("click", function (e) {
+                    if (e.target.tagName === "A") dropdown.removeAttribute("open");
+                });
+            });
+            document.addEventListener("click", function (e) {
+                document.querySelectorAll(".nav-dropdown[open]").forEach(function (dropdown) {
+                    if (!dropdown.contains(e.target)) dropdown.removeAttribute("open");
+                });
             });
         })();
     </script>
