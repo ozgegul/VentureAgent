@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/logo.png') }}">
     <script>
         // Sayfa boyanmadan önce temayı uygula (flash-of-wrong-theme olmasın diye <head> içinde).
         (function () {
@@ -19,7 +20,10 @@
 <body>
     <nav class="navbar">
         <div class="navbar-top">
-            <a href="{{ url_for('main.index') }}" class="brand">VentureAgent</a>
+            <a href="{{ url_for('main.index') }}" class="brand">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="VentureAgent logo" class="brand-logo">
+                VentureAgent
+            </a>
             <div class="nav-links">
                 <a href="{{ url_for('chat.chat_page') }}">Sohbet</a>
                 <details class="nav-dropdown">
