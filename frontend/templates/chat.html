@@ -20,8 +20,12 @@
 
         <div id="chat-input-row">
             <textarea id="chat-input" rows="2" placeholder="örn. Öğrenciler için bir ikinci el kitap platformu fikrim var, TR ve ABD pazarını karşılaştırır mısın?"></textarea>
+            <input type="file" id="chat-file" accept="image/*,application/pdf,text/plain" style="display: none;">
+            <button id="chat-attach-btn" title="Dosya Ekle">📎</button>
+            <button id="chat-mic-btn" title="Ses Kaydet">🎤</button>
             <button id="chat-send">Gönder</button>
         </div>
+        <div id="chat-attachment-status" style="font-size: 0.8rem; color: #666; margin-top: 5px;"></div>
         <button id="chat-reset" type="button">Sohbeti sıfırla</button>
     </div>
 

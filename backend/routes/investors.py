@@ -2,21 +2,18 @@
 
 from flask import Blueprint, render_template, request
 from backend.services.ai_client import ask_ai
+from backend.services.context import get_active_idea
+from backend.services.prompts import get_prompt
 
 investors_bp = Blueprint("investors", __name__, template_folder="../../frontend/templates")
 
-SYSTEM_PROMPT = """Sen bir girişim sermayesi (VC) danışmanısın. Kullanıcının
-girişimi için yatırımcı bulma stratejisi öner. Şu başlıklarda yaz:
-1. Hangi tür yatırımcı aranmalı (melek yatırımcı, VC, hızlandırıcı vb.)
-2. Bu aşamada hangi platformlar/topluluklar araştırılmalı
-3. Yatırımcıya ulaşmadan önce hazırlanması gerekenler
-4. İlk teması nasıl kurmalı (soğuk e-posta, tanıdık üzerinden vb.)
-Türkçe, net ve uygulanabilir yaz."""
+SYSTEM_PROMPT = get_prompt("investors")
 
 
 @investors_bp.route("/", methods=["GET"])
 def investors_form():
-    return render_template("investors.html", advice=None)
+    ctx = get_active_idea()
+    return render_template("investors.html", advice=None, active_idea=ctx)
 
 
 @investors_bp.route("/advise", methods=["POST"])
@@ -37,7 +34,7 @@ def advise_investors():
     )
 
     try:
-        advice = ask_ai(user_prompt=user_prompt, system_prompt=SYSTEM_PROMPT, max_tokens=1200)
+        advice = ask_ai(user_prompt=user_prompt, system_prompt=SYSTEM_PROMPT, max_tokens=2500, module="investors", task_complexity="medium")
     except Exception as exc:  # noqa: BLE001
         return render_template("investors.html", advice=None, error=str(exc))
 

@@ -11,7 +11,7 @@
 
     <form method="POST" action="{{ url_for('revenue.analyze_revenue') }}" class="form">
         <label for="idea">Fikrin nedir?</label>
-        <textarea id="idea" name="idea" rows="3" required></textarea>
+        <textarea id="idea" name="idea" rows="3" required>{{ request.args.get('idea') or (active_idea.idea if active_idea else '') }}</textarea>
 
         <label for="target_audience">Hedef kitle (opsiyonel)</label>
         <input type="text" id="target_audience" name="target_audience">

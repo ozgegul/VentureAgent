@@ -8,18 +8,20 @@ istek atan bir sonuç sayfası (POST).
 from flask import Blueprint, render_template, request
 from backend.database import save_idea_analysis
 from backend.services.ai_client import ask_ai
+from backend.services.context import append_analysis, get_active_idea, set_active_idea
+from backend.services.prompts import get_prompt
 from data_science.pipelines.market_scoring import StartupSignal, build_venture_score
 
 idea_bp = Blueprint("idea", __name__, template_folder="../../frontend/templates")
 
-SYSTEM_PROMPT = """Sen deneyimli bir startup mentörüsün. Kullanıcının girişim
-fikrini analiz et. Net, yapıcı ve uygulanabilir geri bildirim ver. Türkçe cevap ver."""
+SYSTEM_PROMPT = get_prompt("idea")
 
 
 @idea_bp.route("/", methods=["GET"])
 def idea_form():
     """Fikir giriş formunu gösterir."""
-    return render_template("idea.html", analysis=None, venture_score=None)
+    ctx = get_active_idea()
+    return render_template("idea.html", analysis=None, venture_score=None, active_idea=ctx)
 
 
 def _form_score(name: str, default: int = 3) -> int:
@@ -73,7 +75,7 @@ Bu fikri şu başlıklarla değerlendir:
 """
 
     try:
-        analysis = ask_ai(user_prompt=user_prompt, system_prompt=SYSTEM_PROMPT, max_tokens=1200)
+        analysis = ask_ai(user_prompt=user_prompt, system_prompt=SYSTEM_PROMPT, max_tokens=2500, module="idea", task_complexity="high")
     except Exception as exc:  # noqa: BLE001
         save_idea_analysis(
             idea=idea,
@@ -95,4 +97,13 @@ Bu fikri şu başlıklarla değerlendir:
         venture_score=venture_score,
         ai_analysis=analysis,
     )
+
+    # Phase 3: Store the active idea and analysis result for downstream modules
+    set_active_idea(idea=idea, sector=sector, problem=problem)
+    append_analysis("idea", {
+        "venture_score": venture_score.score,
+        "risk_level": venture_score.risk_level,
+        "analysis_text": analysis,
+    })
+
     return render_template("idea.html", analysis=analysis, venture_score=venture_score)

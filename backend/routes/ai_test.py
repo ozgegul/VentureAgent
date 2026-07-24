@@ -20,7 +20,7 @@ def ai_test_page():
             error = "Prompt boş olamaz."
         else:
             try:
-                result = ask_ai(prompt, max_tokens=300)
+                result = ask_ai(prompt, max_tokens=300, module="ai_test")
             except Exception as exc:  # noqa: BLE001
                 error = str(exc)
 

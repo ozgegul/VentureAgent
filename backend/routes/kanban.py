@@ -12,26 +12,18 @@ yenilendiğinde sıfırlanır. Kalıcı depolama istenirse bir veritabanı
 
 from flask import Blueprint, render_template, request
 from backend.services.ai_client import ask_ai, safe_parse_json
+from backend.services.context import get_active_idea
+from backend.services.prompts import get_prompt, get_prompt_schema
 
 kanban_bp = Blueprint("kanban", __name__, template_folder="../../frontend/templates")
 
-SYSTEM_PROMPT = """Sen bir ürün yöneticisisin. Verilen girişim fikri için MVP'yi
-hayata geçirmek üzere yapılacak somut görevleri Kanban kartları olarak üret.
-Cevabını SADECE şu JSON şemasına uygun ver:
-
-{
-  "cards": [
-    {"title": "...", "description": "..."}
-  ]
-}
-
-8-12 kart üret, her biri tek bir somut aksiyon içersin (örn. "Landing page
-tasarımını oluştur", "İlk 10 kullanıcı görüşmesini yap"). Türkçe yaz."""
+SYSTEM_PROMPT = get_prompt("kanban")
 
 
 @kanban_bp.route("/", methods=["GET"])
 def kanban_form():
-    return render_template("kanban.html", cards=None)
+    ctx = get_active_idea()
+    return render_template("kanban.html", cards=None, active_idea=ctx)
 
 
 @kanban_bp.route("/generate", methods=["POST"])
@@ -47,8 +39,11 @@ def generate_kanban():
         raw = ask_ai(
             user_prompt=user_prompt,
             system_prompt=SYSTEM_PROMPT,
-            max_tokens=1200,
+            max_tokens=2500,
             json_mode=True,
+            module="kanban",
+            task_complexity="medium",
+            response_schema=get_prompt_schema("kanban"),
         )
         result = safe_parse_json(raw)
         cards = result.get("cards", [])

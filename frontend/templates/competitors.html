@@ -11,10 +11,10 @@
 
     <form method="POST" action="{{ url_for('competitors.analyze_competitors') }}" class="form">
         <label for="idea">Fikrin nedir?</label>
-        <textarea id="idea" name="idea" rows="3" required></textarea>
+        <textarea id="idea" name="idea" rows="3" required>{{ request.args.get('idea') or (active_idea.idea if active_idea else '') }}</textarea>
 
         <label for="sector">Sektör (opsiyonel)</label>
-        <input type="text" id="sector" name="sector">
+        <input type="text" id="sector" name="sector" value="{{ active_idea.sector if active_idea else '' }}">
 
         <label for="region">Pazar bölgesi (opsiyonel, örn. Türkiye, Global)</label>
         <input type="text" id="region" name="region">
