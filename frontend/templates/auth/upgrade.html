@@ -17,6 +17,7 @@
         {% endif %}
 
         <form method="POST" action="{{ url_for('auth.process_upgrade') }}" class="form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <label for="card_name">Kart Üzerindeki İsim</label>
             <input type="text" id="card_name" name="card_name" value="{{ card_name or '' }}" placeholder="Ad Soyad" required>
 

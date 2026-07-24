@@ -64,6 +64,7 @@
     <div class="detail-actions">
         <a href="{{ url_for('history.history_page') }}">← Geçmiş analizlere dön</a>
         <form method="POST" action="{{ url_for('history.delete_history_item', analysis_id=analysis.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button type="submit" class="danger-button" onclick="return confirm('Bu kaydı silmek istediğine emin misin?')">Kaydı Sil</button>
         </form>
     </div>

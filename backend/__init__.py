@@ -5,6 +5,7 @@ run.py bu fonksiyonu çağırarak uygulamayı başlatır.
 
 import os
 from flask import Flask
+from flask_wtf import CSRFProtect
 from dotenv import load_dotenv
 
 load_dotenv()  # .env dosyasındaki değişkenleri yükler
@@ -16,7 +17,19 @@ def create_app():
         template_folder="../frontend/templates",
         static_folder="../frontend/static",
     )
-    app.config["SECRET_KEY"] = os.environ.get("FLASK_SECRET_KEY", "dev-secret-key")
+    debug = os.environ.get("FLASK_DEBUG", "False").strip().lower() == "true"
+    secret_key = os.environ.get("FLASK_SECRET_KEY")
+    if not secret_key:
+        if not debug:
+            raise RuntimeError(
+                "FLASK_SECRET_KEY tanımlı değil. Prod modda (FLASK_DEBUG=False) "
+                "güvenli bir rastgele değer .env dosyasına eklenmeden uygulama başlatılamaz."
+            )
+        secret_key = "dev-secret-key"
+    app.config["SECRET_KEY"] = secret_key
+    app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024  # 10MB — eklenti yüklemeleri için üst sınır
+
+    CSRFProtect(app)
 
     from backend.database import init_app
 

@@ -37,6 +37,7 @@
                                 <div class="table-actions">
                                     <a href="{{ url_for('history.history_detail', analysis_id=analysis.id) }}">Detay</a>
                                     <form method="POST" action="{{ url_for('history.delete_history_item', analysis_id=analysis.id) }}">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                         <button type="submit" class="link-danger" onclick="return confirm('Bu kaydı silmek istediğine emin misin?')">Sil</button>
                                     </form>
                                 </div>
@@ -77,6 +78,7 @@
                                 <div class="table-actions">
                                     <a href="{{ url_for('history.module_result_detail', result_id=result.id) }}">Detay</a>
                                     <form method="POST" action="{{ url_for('history.delete_module_result_item', result_id=result.id) }}">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                         <button type="submit" class="link-danger" onclick="return confirm('Bu kaydı silmek istediğine emin misin?')">Sil</button>
                                     </form>
                                 </div>

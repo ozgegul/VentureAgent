@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import time
 import urllib.error
 import urllib.request
 
@@ -160,14 +161,25 @@ def _ask_gemini(
         method="POST",
     )
 
-    try:
-        with urllib.request.urlopen(request, timeout=40) as response:
-            data = json.loads(response.read().decode("utf-8"))
-    except urllib.error.HTTPError as exc:
-        details = exc.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"Gemini API hata döndürdü: {exc.code} - {details}") from exc
-
-    return _extract_gemini_text(data)
+    for attempt in range(1, 4):
+        try:
+            with urllib.request.urlopen(request, timeout=40) as response:
+                data = json.loads(response.read().decode("utf-8"))
+            return _extract_gemini_text(data)
+        except urllib.error.HTTPError as exc:
+            details = exc.read().decode("utf-8", errors="replace")
+            if exc.code in (429, 503) and attempt < 3:
+                time.sleep(1.5 * attempt)
+                continue
+            raise RuntimeError(
+                f"Gemini API hata döndürdü: {exc.code} - {details}"
+            ) from exc
+        except urllib.error.URLError as exc:
+            if attempt < 3:
+                time.sleep(1.5 * attempt)
+                continue
+            raise RuntimeError(f"Gemini bağlantı hatası: {exc.reason}") from exc
+    raise RuntimeError("Gemini isteği başarısız oldu. Lütfen tekrar deneyin.")
 
 
 def _extract_gemini_text(data: dict) -> str:

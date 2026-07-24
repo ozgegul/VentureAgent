@@ -80,10 +80,15 @@ def role_required(min_role: str):
                 flash("Bu sayfayı görüntülemek için giriş yapmalısınız.", "error")
                 return redirect(url_for("auth.login", next=request.path))
             if ROLE_RANK.get(user["role"], 0) < ROLE_RANK.get(min_role, 99):
-                flash("Bu özellik için yetkiniz yok.", "error")
-                return redirect(url_for("main.index"))
+                flash("Bu özellik için yetkiniz yok. Pro hesabınız yoksa lütfen yükseltin.", "error")
+                return redirect(url_for("auth.upgrade_page"))
             return view(*args, **kwargs)
 
         return wrapped
 
     return decorator
+
+
+def pro_required(view):
+    """Require the current user to be a Pro or Admin user."""
+    return role_required("pro")(view)

@@ -1,9 +1,10 @@
 """Asansör konuşması ve pitch deck taslağı hazırlama modülü."""
 
 from flask import Blueprint, render_template, request
-from backend.auth import current_user, login_required
+from backend.auth import current_user, is_pro, login_required
 from backend.database import save_module_result
 from backend.services.ai_client import ask_ai, safe_parse_json
+from backend.services.file_helper import build_attachment_prompt
 
 pitch_bp = Blueprint("pitch", __name__, template_folder="../../frontend/templates")
 
@@ -38,13 +39,18 @@ def generate_pitch():
     idea = request.form.get("idea", "").strip()
     pitch_type = request.form.get("pitch_type", "elevator")
     traction = request.form.get("traction", "").strip()
+    attachment = request.files.get("attachment")
+    if attachment and not is_pro():
+        return render_template("pitch.html", elevator=None, slides=None, error="Dosya yükleme yalnızca Pro/Admin kullanıcılar için kullanılabilir.")
+    attachment_prompt, attachment_info = build_attachment_prompt(attachment)
+    attachment_name = attachment_info["display_name"] if attachment_info else None
 
     if not idea:
-        return render_template("pitch.html", elevator=None, slides=None, error="Fikir alanı zorunludur.")
+        return render_template("pitch.html", elevator=None, slides=None, error="Fikir alanı zorunludur.", attachment_name=attachment_name)
 
     try:
         if pitch_type == "deck":
-            user_prompt = f"Fikir: {idea}\nMevcut traction/kanıt: {traction or 'henüz yok'}"
+            user_prompt = f"Fikir: {idea}\nMevcut traction/kanıt: {traction or 'henüz yok'}{attachment_prompt}"
             raw = ask_ai(
                 user_prompt=user_prompt,
                 system_prompt=DECK_SYSTEM_PROMPT,
@@ -57,12 +63,12 @@ def generate_pitch():
                 user_id=current_user()["id"],
                 module="pitch_deck",
                 idea=idea,
-                input_data={"traction": traction},
+                input_data={"traction": traction, "attachment": attachment_info["meta"] if attachment_info else None},
                 result_data={"slides": slides},
             )
             return render_template("pitch.html", elevator=None, slides=slides)
         else:
-            user_prompt = f"Fikir: {idea}"
+            user_prompt = f"Fikir: {idea}{attachment_prompt}"
             elevator = ask_ai(
                 user_prompt=user_prompt,
                 system_prompt=ELEVATOR_SYSTEM_PROMPT,
@@ -72,7 +78,7 @@ def generate_pitch():
                 user_id=current_user()["id"],
                 module="pitch_elevator",
                 idea=idea,
-                input_data=None,
+                input_data={"attachment": attachment_info["meta"] if attachment_info else None},
                 result_data={"elevator": elevator},
             )
             return render_template("pitch.html", elevator=elevator, slides=None)

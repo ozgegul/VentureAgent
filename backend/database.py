@@ -198,28 +198,58 @@ def list_module_results(user_id: int, module: str | None = None, limit: int = 50
     if module:
         rows = get_db().execute(
             """
-            SELECT id, module, idea, created_at FROM module_results
+            SELECT * FROM module_results
             WHERE user_id = ? AND module = ?
-            ORDER BY created_at DESC, id DESC LIMIT ?
+            ORDER BY created_at DESC, id DESC
+            LIMIT ?
             """,
             (user_id, module, limit),
         ).fetchall()
     else:
         rows = get_db().execute(
             """
-            SELECT id, module, idea, created_at FROM module_results
+            SELECT * FROM module_results
             WHERE user_id = ?
-            ORDER BY created_at DESC, id DESC LIMIT ?
+            ORDER BY created_at DESC, id DESC
+            LIMIT ?
             """,
             (user_id, limit),
         ).fetchall()
     return [dict(row) for row in rows]
 
 
-def get_module_result(result_id: int, user_id: int) -> dict[str, Any] | None:
-    """Return one module result, scoped to its owning user."""
+def get_idea_analysis(analysis_id: int, user_id: int) -> dict[str, Any] | None:
     row = get_db().execute(
-        "SELECT * FROM module_results WHERE id = ? AND user_id = ?", (result_id, user_id)
+        "SELECT * FROM idea_analyses WHERE id = ? AND user_id = ?",
+        (analysis_id, user_id),
+    ).fetchone()
+    if row is None:
+        return None
+    analysis = dict(row)
+    analysis["recommendations"] = json.loads(analysis["recommendations"]) if analysis["recommendations"] else []
+    return analysis
+
+
+def list_idea_analyses(user_id: int, limit: int = 50) -> list[dict[str, Any]]:
+    rows = get_db().execute(
+        "SELECT * FROM idea_analyses WHERE user_id = ? ORDER BY created_at DESC, id DESC LIMIT ?",
+        (user_id, limit),
+    ).fetchall()
+    return [dict(row) for row in rows]
+
+
+def delete_idea_analysis(analysis_id: int, user_id: int) -> None:
+    get_db().execute(
+        "DELETE FROM idea_analyses WHERE id = ? AND user_id = ?",
+        (analysis_id, user_id),
+    )
+    get_db().commit()
+
+
+def get_module_result(result_id: int, user_id: int) -> dict[str, Any] | None:
+    row = get_db().execute(
+        "SELECT * FROM module_results WHERE id = ? AND user_id = ?",
+        (result_id, user_id),
     ).fetchone()
     if row is None:
         return None
@@ -230,11 +260,23 @@ def get_module_result(result_id: int, user_id: int) -> dict[str, Any] | None:
 
 
 def delete_module_result(result_id: int, user_id: int) -> None:
-    """Delete one module result, scoped to its owning user."""
     get_db().execute(
-        "DELETE FROM module_results WHERE id = ? AND user_id = ?", (result_id, user_id)
+        "DELETE FROM module_results WHERE id = ? AND user_id = ?",
+        (result_id, user_id),
     )
     get_db().commit()
+
+
+def get_dashboard_metrics(user_id: int) -> dict[str, Any]:
+    total_analyses = get_db().execute(
+        "SELECT COUNT(*) AS count FROM idea_analyses WHERE user_id = ?",
+        (user_id,),
+    ).fetchone()["count"]
+    total_modules = get_db().execute(
+        "SELECT COUNT(*) AS count FROM module_results WHERE user_id = ?",
+        (user_id,),
+    ).fetchone()["count"]
+    return {"total_analyses": total_analyses, "total_modules": total_modules}
 
 
 def save_idea_analysis(

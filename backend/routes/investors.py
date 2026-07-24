@@ -1,9 +1,10 @@
 """Yatırımcı bulma tavsiyeleri modülü."""
 
 from flask import Blueprint, render_template, request
-from backend.auth import current_user, login_required
+from backend.auth import current_user, is_pro, login_required
 from backend.database import save_module_result
 from backend.services.ai_client import ask_ai
+from backend.services.file_helper import build_attachment_prompt
 
 investors_bp = Blueprint("investors", __name__, template_folder="../../frontend/templates")
 
@@ -29,15 +30,20 @@ def advise_investors():
     stage = request.form.get("stage", "").strip()
     amount = request.form.get("amount", "").strip()
     geography = request.form.get("geography", "").strip()
+    attachment = request.files.get("attachment")
+    if attachment and not is_pro():
+        return render_template("investors.html", advice=None, error="Dosya yükleme yalnızca Pro/Admin kullanıcılar için kullanılabilir.")
+    attachment_prompt, attachment_info = build_attachment_prompt(attachment)
+    attachment_name = attachment_info["display_name"] if attachment_info else None
 
     if not idea:
-        return render_template("investors.html", advice=None, error="Fikir alanı zorunludur.")
+        return render_template("investors.html", advice=None, error="Fikir alanı zorunludur.", attachment_name=attachment_name)
 
     user_prompt = (
         f"Fikir: {idea}\n"
         f"Aşama: {stage or 'belirtilmedi'}\n"
         f"Aranan yatırım tutarı: {amount or 'belirtilmedi'}\n"
-        f"Coğrafya: {geography or 'belirtilmedi'}"
+        f"Coğrafya: {geography or 'belirtilmedi'}{attachment_prompt}"
     )
 
     try:
@@ -49,7 +55,7 @@ def advise_investors():
         user_id=current_user()["id"],
         module="investors",
         idea=idea,
-        input_data={"stage": stage, "amount": amount, "geography": geography},
+        input_data={"stage": stage, "amount": amount, "geography": geography, "attachment": attachment_info["meta"] if attachment_info else None},
         result_data={"advice": advice},
     )
     return render_template("investors.html", advice=advice)

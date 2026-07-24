@@ -9,9 +9,11 @@
 
     {% if error %}<p class="error">{{ error }}</p>{% endif %}
 
-    <form method="POST" action="{{ url_for('competitors.analyze_competitors') }}" class="form">
+    <form method="POST" action="{{ url_for('competitors.analyze_competitors') }}" class="form" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label for="idea">Fikrin nedir?</label>
         <textarea id="idea" name="idea" rows="3" required></textarea>
+        {% include '_file_upload.html' %}
 
         <label for="sector">Sektör (opsiyonel)</label>
         <input type="text" id="sector" name="sector">

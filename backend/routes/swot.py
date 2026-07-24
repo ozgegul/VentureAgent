@@ -4,9 +4,10 @@ Claude'dan yapılandırılmış JSON istenir (json_mode=True) ve 2x2 grid olarak
 """
 
 from flask import Blueprint, render_template, request
-from backend.auth import current_user, login_required
+from backend.auth import current_user, is_pro, login_required
 from backend.database import save_module_result
 from backend.services.ai_client import ask_ai, safe_parse_json
+from backend.services.file_helper import build_attachment_prompt
 
 swot_bp = Blueprint("swot", __name__, template_folder="../../frontend/templates")
 
@@ -34,11 +35,17 @@ def swot_form():
 def analyze_swot():
     idea = request.form.get("idea", "").strip()
     sector = request.form.get("sector", "").strip()
+    attachment = request.files.get("attachment")
+    if attachment and not is_pro():
+        return render_template("swot.html", swot=None, error="Dosya yükleme yalnızca Pro/Admin kullanıcılar için kullanılabilir.")
+
+    attachment_prompt, attachment_info = build_attachment_prompt(attachment)
+    attachment_name = attachment_info["display_name"] if attachment_info else None
 
     if not idea:
-        return render_template("swot.html", swot=None, error="Fikir alanı zorunludur.")
+        return render_template("swot.html", swot=None, error="Fikir alanı zorunludur.", attachment_name=attachment_name)
 
-    user_prompt = f"Fikir: {idea}\nSektör: {sector or 'belirtilmedi'}"
+    user_prompt = f"Fikir: {idea}\nSektör: {sector or 'belirtilmedi'}{attachment_prompt}"
 
     try:
         raw = ask_ai(
@@ -55,7 +62,7 @@ def analyze_swot():
         user_id=current_user()["id"],
         module="swot",
         idea=idea,
-        input_data={"sector": sector},
+        input_data={"sector": sector, "attachment": attachment_info["meta"] if attachment_info else None},
         result_data=swot,
     )
     return render_template("swot.html", swot=swot)

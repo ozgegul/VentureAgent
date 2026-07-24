@@ -11,9 +11,10 @@ yenilendiğinde sıfırlanır. Kalıcı depolama istenirse bir veritabanı
 """
 
 from flask import Blueprint, render_template, request
-from backend.auth import current_user, login_required
+from backend.auth import current_user, is_pro, login_required
 from backend.database import save_module_result
 from backend.services.ai_client import ask_ai, safe_parse_json
+from backend.services.file_helper import build_attachment_prompt
 
 kanban_bp = Blueprint("kanban", __name__, template_folder="../../frontend/templates")
 
@@ -41,11 +42,16 @@ def kanban_form():
 @login_required
 def generate_kanban():
     idea = request.form.get("idea", "").strip()
+    attachment = request.files.get("attachment")
+    if attachment and not is_pro():
+        return render_template("kanban.html", cards=None, error="Dosya yükleme yalnızca Pro/Admin kullanıcılar için kullanılabilir.")
+    attachment_prompt, attachment_info = build_attachment_prompt(attachment)
+    attachment_name = attachment_info["display_name"] if attachment_info else None
 
     if not idea:
-        return render_template("kanban.html", cards=None, error="Fikir alanı zorunludur.")
+        return render_template("kanban.html", cards=None, error="Fikir alanı zorunludur.", attachment_name=attachment_name)
 
-    user_prompt = f"Fikir: {idea}"
+    user_prompt = f"Fikir: {idea}{attachment_prompt}"
 
     try:
         raw = ask_ai(
@@ -63,7 +69,7 @@ def generate_kanban():
         user_id=current_user()["id"],
         module="kanban",
         idea=idea,
-        input_data=None,
+        input_data={"attachment": attachment_info["meta"] if attachment_info else None},
         result_data={"cards": cards},
     )
     return render_template(

@@ -67,6 +67,7 @@
                         <td>{{ user.created_at }}</td>
                         <td class="table-actions">
                             <form method="POST" action="{{ url_for('admin.change_role', user_id=user.id) }}" class="inline-form">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <select name="role" class="role-select" onchange="this.form.submit()">
                                     {% for role in roles %}
                                         <option value="{{ role }}" {{ "selected" if role == user.role else "" }}>{{ role }}</option>
@@ -74,6 +75,7 @@
                                 </select>
                             </form>
                             <form method="POST" action="{{ url_for('admin.toggle_active', user_id=user.id) }}" class="inline-form">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <button type="submit" class="link-danger">
                                     {{ "Devre dışı bırak" if user.is_active else "Aktifleştir" }}
                                 </button>

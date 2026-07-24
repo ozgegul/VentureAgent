@@ -12,6 +12,7 @@
         {% endif %}
 
         <form method="POST" action="{{ url_for('auth.register') }}" class="form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <label for="name">Ad Soyad</label>
             <input type="text" id="name" name="name" value="{{ name or '' }}" required>
 

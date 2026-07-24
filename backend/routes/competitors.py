@@ -8,9 +8,10 @@ entegre edilmesi önerilir — bkz. README.
 """
 
 from flask import Blueprint, render_template, request
-from backend.auth import current_user, login_required
+from backend.auth import current_user, is_pro, login_required
 from backend.database import save_module_result
 from backend.services.ai_client import ask_ai, safe_parse_json
+from backend.services.file_helper import build_attachment_prompt
 
 competitors_bp = Blueprint("competitors", __name__, template_folder="../../frontend/templates")
 
@@ -40,11 +41,20 @@ def analyze_competitors():
     idea = request.form.get("idea", "").strip()
     sector = request.form.get("sector", "").strip()
     region = request.form.get("region", "").strip()
+    attachment = request.files.get("attachment")
+    if attachment and not is_pro():
+        return render_template("competitors.html", result=None, error="Dosya yükleme yalnızca Pro/Admin kullanıcılar için kullanılabilir.")
+    attachment_prompt, attachment_info = build_attachment_prompt(attachment)
+    attachment_name = attachment_info["display_name"] if attachment_info else None
 
     if not idea:
-        return render_template("competitors.html", result=None, error="Fikir alanı zorunludur.")
+        return render_template("competitors.html", result=None, error="Fikir alanı zorunludur.", attachment_name=attachment_name)
 
-    user_prompt = f"Fikir: {idea}\nSektör: {sector or 'belirtilmedi'}\nPazar bölgesi: {region or 'belirtilmedi'}"
+    user_prompt = (
+        f"Fikir: {idea}\n"
+        f"Sektör: {sector or 'belirtilmedi'}\n"
+        f"Pazar bölgesi: {region or 'belirtilmedi'}{attachment_prompt}"
+    )
 
     try:
         raw = ask_ai(
@@ -61,7 +71,7 @@ def analyze_competitors():
         user_id=current_user()["id"],
         module="competitors",
         idea=idea,
-        input_data={"sector": sector, "region": region},
+        input_data={"sector": sector, "region": region, "attachment": attachment_info["meta"] if attachment_info else None},
         result_data=result,
     )
     return render_template("competitors.html", result=result)
