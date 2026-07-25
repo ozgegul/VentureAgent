@@ -9,14 +9,13 @@
 
     {% if error %}<p class="error">{{ error }}</p>{% endif %}
 
-    <form method="POST" action="{{ url_for('roadmap.generate_roadmap') }}" class="form" enctype="multipart/form-data">
+    <form method="POST" action="{{ url_for('roadmap.generate_roadmap') }}" class="form">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label for="idea">Fikrin nedir?</label>
         <textarea id="idea" name="idea" rows="3" required></textarea>
 
         <label for="tech_capacity">Teknik kapasiten nedir? (opsiyonel)</label>
         <input type="text" id="tech_capacity" name="tech_capacity" placeholder="örn. tek kişi, kod yazabiliyorum">
-        {% include '_file_upload.html' %}
 
         <label for="budget">Bütçen nedir? (opsiyonel)</label>
         <input type="text" id="budget" name="budget">

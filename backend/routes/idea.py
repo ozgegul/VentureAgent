@@ -6,10 +6,9 @@ istek atan bir sonuç sayfası (POST).
 """
 
 from flask import Blueprint, render_template, request
-from backend.auth import current_user, is_pro, login_required
+from backend.auth import current_user, login_required
 from backend.database import save_idea_analysis
 from backend.services.ai_client import ask_ai
-from backend.services.file_helper import build_attachment_prompt
 from data_science.pipelines.market_scoring import StartupSignal, build_venture_score
 
 idea_bp = Blueprint("idea", __name__, template_folder="../../frontend/templates")
@@ -50,25 +49,12 @@ def analyze_idea():
     )
     venture_score = build_venture_score(signal)
 
-    attachment = request.files.get("attachment")
-    if attachment and not is_pro():
-        return render_template(
-            "idea.html",
-            analysis=None,
-            venture_score=None,
-            error="Dosya yükleme yalnızca Pro/Admin kullanıcılar için kullanılabilir.",
-        )
-
-    attachment_prompt, attachment_info = build_attachment_prompt(attachment)
-    attachment_name = attachment_info["display_name"] if attachment_info else None
-
     if not idea or not problem:
         return render_template(
             "idea.html",
             analysis=None,
             venture_score=None,
             error="Fikir ve çözülen problem alanları zorunludur.",
-            attachment_name=attachment_name,
         )
 
     user_prompt = f"""
@@ -82,7 +68,6 @@ Data science sinyalleri:
 - Rekabet yoğunluğu: {signal.competition_intensity}/5
 - Gelir modeli netliği: {signal.monetization_clarity}/5
 - Venture Score: {venture_score.score}/100 ({venture_score.risk_level})
-{attachment_prompt}
 
 Bu fikri şu başlıklarla değerlendir:
 1. Fikrin güçlü yönleri

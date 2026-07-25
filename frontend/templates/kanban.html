@@ -10,11 +10,10 @@
     {% if error %}<p class="error">{{ error }}</p>{% endif %}
     {% if note %}<p class="note">{{ note }}</p>{% endif %}
 
-    <form method="POST" action="{{ url_for('kanban.generate_kanban') }}" class="form" enctype="multipart/form-data">
+    <form method="POST" action="{{ url_for('kanban.generate_kanban') }}" class="form">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label for="idea">Fikrin nedir?</label>
         <textarea id="idea" name="idea" rows="3" required></textarea>
-        {% include '_file_upload.html' %}
         <button type="submit">Görevleri Oluştur</button>
     </form>
 

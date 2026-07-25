@@ -20,23 +20,7 @@
 
         <div id="chat-input-row">
             <textarea id="chat-input" rows="2" placeholder="örn. Öğrenciler için bir ikinci el kitap platformu fikrim var, TR ve ABD pazarını karşılaştırır mısın?"></textarea>
-            <div class="chat-actions">
-                {% if is_pro %}
-                    <div class="chat-file-actions">
-                        <label class="file-upload">
-                            Dosya seç
-                            <input type="file" id="chat-file-input" accept=".txt,.md,.json,.csv,.py,.js,.html,.css,.png,.jpg,.jpeg,.webp,.gif" />
-                        </label>
-                        <button id="chat-send-file" type="button" class="secondary-button small" hidden>Dosyayı Gönder</button>
-                    </div>
-                    <div class="chat-file-info">
-                        <div id="chat-file-status" class="chat-file-status"></div>
-                        <div id="chat-file-preview" class="chat-file-preview"></div>
-                    </div>
-                    <button id="chat-voice-toggle" type="button" class="secondary-button small">Sesli Yanıt</button>
-                {% endif %}
-                <button id="chat-send">Gönder</button>
-            </div>
+            <button id="chat-send">Gönder</button>
         </div>
         <button id="chat-reset" type="button">Sohbeti sıfırla</button>
     </div>
@@ -46,7 +30,7 @@
             <div class="pro-upsell-icon">✓</div>
             <div>
                 <strong>Pro hesabındasın</strong>
-                <p>Dosya ve ses ile mesaj gönderme yukarıda aktif.</p>
+                <p>Dosya ve ses ile mesaj gönderme çok yakında burada aktif olacak.</p>
             </div>
         </div>
     {% elif g.user %}

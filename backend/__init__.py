@@ -27,7 +27,7 @@ def create_app():
             )
         secret_key = "dev-secret-key"
     app.config["SECRET_KEY"] = secret_key
-    app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024  # 10MB — eklenti yüklemeleri için üst sınır
+    app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024  # 10MB — istek gövdesi için üst sınır
 
     CSRFProtect(app)
 

@@ -12,7 +12,7 @@ yapı için ileride veritabanına taşınabilir.
 """
 
 from flask import Blueprint, render_template, request, jsonify, session
-from backend.auth import current_user, is_pro
+from backend.auth import is_pro
 from backend.services.ai_client import ask_ai_conversation
 
 chat_bp = Blueprint("chat", __name__, template_folder="../../frontend/templates")
@@ -44,40 +44,6 @@ def chat_page():
 def send_message():
     data = request.get_json(silent=True) or {}
     user_message = (data.get("message") or "").strip()
-    attachment = data.get("attachment")
-    use_voice = bool(data.get("voice"))
-
-    is_pro_user = is_pro()
-    if attachment and not is_pro_user:
-        return jsonify({"error": "Dosya yükleme yalnızca Pro/Admin kullanıcılar için kullanılabilir."}), 403
-    if use_voice and not is_pro_user:
-        return jsonify({"error": "Sesli yanıt yalnızca Pro/Admin kullanıcılar için kullanılabilir."}), 403
-
-    if attachment and isinstance(attachment, dict):
-        file_name = attachment.get("name", "dosya")
-        file_content = (attachment.get("content") or "").strip()
-        is_image = bool(attachment.get("is_image"))
-
-        if is_image:
-            metadata = [
-                f"Dosya: {file_name}",
-                f"Tür: {attachment.get('type', 'image')}",
-                f"Boyut: {attachment.get('size', 0)} bytes",
-            ]
-            attachment_text = "\n".join(metadata)
-        elif file_content:
-            if len(file_content) > 3000:
-                file_content = file_content[:3000] + "\n\n... (dosya içeriği kısaltıldı)"
-            attachment_text = f"{file_content}"
-        else:
-            attachment_text = None
-
-        if attachment_text:
-            user_message = (
-                f"{user_message}\n\n[Eklenti: {file_name}]\n{attachment_text}"
-                if user_message
-                else f"[Eklenti: {file_name}]\n{attachment_text}"
-            )
 
     if not user_message:
         return jsonify({"error": "Mesaj boş olamaz."}), 400

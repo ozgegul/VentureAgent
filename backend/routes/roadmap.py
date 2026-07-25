@@ -1,10 +1,9 @@
 """MVP roadmap oluşturma modülü."""
 
 from flask import Blueprint, render_template, request
-from backend.auth import current_user, is_pro, login_required
+from backend.auth import current_user, login_required
 from backend.database import save_module_result
 from backend.services.ai_client import ask_ai, safe_parse_json
-from backend.services.file_helper import build_attachment_prompt
 
 roadmap_bp = Blueprint("roadmap", __name__, template_folder="../../frontend/templates")
 
@@ -34,20 +33,14 @@ def generate_roadmap():
     idea = request.form.get("idea", "").strip()
     tech_capacity = request.form.get("tech_capacity", "").strip()
     budget = request.form.get("budget", "").strip()
-    attachment = request.files.get("attachment")
-    if attachment and not is_pro():
-        return render_template("roadmap.html", result=None, error="Dosya yükleme yalnızca Pro/Admin kullanıcılar için kullanılabilir.")
-    attachment_prompt, attachment_info = build_attachment_prompt(attachment)
-    attachment_name = attachment_info["display_name"] if attachment_info else None
 
     if not idea:
-        return render_template("roadmap.html", result=None, error="Fikir alanı zorunludur.", attachment_name=attachment_name)
+        return render_template("roadmap.html", result=None, error="Fikir alanı zorunludur.")
 
     user_prompt = (
         f"Fikir: {idea}\n"
         f"Teknik kapasite: {tech_capacity or 'belirtilmedi'}\n"
         f"Bütçe: {budget or 'belirtilmedi'}"
-        f"{attachment_prompt}"
     )
 
     try:
@@ -65,7 +58,7 @@ def generate_roadmap():
         user_id=current_user()["id"],
         module="roadmap",
         idea=idea,
-        input_data={"tech_capacity": tech_capacity, "budget": budget, "attachment": attachment_info["meta"] if attachment_info else None},
+        input_data={"tech_capacity": tech_capacity, "budget": budget},
         result_data=result,
     )
     return render_template("roadmap.html", result=result)

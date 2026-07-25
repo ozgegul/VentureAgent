@@ -87,8 +87,3 @@ def role_required(min_role: str):
         return wrapped
 
     return decorator
-
-
-def pro_required(view):
-    """Require the current user to be a Pro or Admin user."""
-    return role_required("pro")(view)

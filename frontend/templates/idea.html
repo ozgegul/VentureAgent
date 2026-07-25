@@ -9,11 +9,10 @@
         <p class="error">{{ error }}</p>
     {% endif %}
 
-    <form method="POST" action="{{ url_for('idea.analyze_idea') }}" class="form" enctype="multipart/form-data">
+    <form method="POST" action="{{ url_for('idea.analyze_idea') }}" class="form">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label for="idea">Fikrin nedir?</label>
         <textarea id="idea" name="idea" rows="3" required></textarea>
-        {% include '_file_upload.html' %}
 
         <label for="problem">Hangi problemi çözüyor?</label>
         <textarea id="problem" name="problem" rows="3" required></textarea>

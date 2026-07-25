@@ -1,10 +1,9 @@
 """Gelir modeli önerisi modülü."""
 
 from flask import Blueprint, render_template, request
-from backend.auth import current_user, is_pro, login_required
+from backend.auth import current_user, login_required
 from backend.database import save_module_result
 from backend.services.ai_client import ask_ai, safe_parse_json
-from backend.services.file_helper import build_attachment_prompt
 
 revenue_bp = Blueprint("revenue", __name__, template_folder="../../frontend/templates")
 
@@ -35,19 +34,14 @@ def analyze_revenue():
     idea = request.form.get("idea", "").strip()
     target_audience = request.form.get("target_audience", "").strip()
     pricing_preference = request.form.get("pricing_preference", "").strip()
-    attachment = request.files.get("attachment")
-    if attachment and not is_pro():
-        return render_template("revenue.html", result=None, error="Dosya yükleme yalnızca Pro/Admin kullanıcılar için kullanılabilir.")
-    attachment_prompt, attachment_info = build_attachment_prompt(attachment)
-    attachment_name = attachment_info["display_name"] if attachment_info else None
 
     if not idea:
-        return render_template("revenue.html", result=None, error="Fikir alanı zorunludur.", attachment_name=attachment_name)
+        return render_template("revenue.html", result=None, error="Fikir alanı zorunludur.")
 
     user_prompt = (
         f"Fikir: {idea}\n"
         f"Hedef kitle: {target_audience or 'belirtilmedi'}\n"
-        f"Fiyatlandırma tercihi: {pricing_preference or 'belirtilmedi'}{attachment_prompt}"
+        f"Fiyatlandırma tercihi: {pricing_preference or 'belirtilmedi'}"
     )
 
     try:
@@ -65,7 +59,7 @@ def analyze_revenue():
         user_id=current_user()["id"],
         module="revenue",
         idea=idea,
-        input_data={"target_audience": target_audience, "pricing_preference": pricing_preference, "attachment": attachment_info["meta"] if attachment_info else None},
+        input_data={"target_audience": target_audience, "pricing_preference": pricing_preference},
         result_data=result,
     )
     return render_template("revenue.html", result=result)
