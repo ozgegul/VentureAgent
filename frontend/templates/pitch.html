@@ -10,8 +10,9 @@
     {% if error %}<p class="error">{{ error }}</p>{% endif %}
 
     <form method="POST" action="{{ url_for('pitch.generate_pitch') }}" class="form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label for="idea">Fikrin nedir?</label>
-        <textarea id="idea" name="idea" rows="3" required>{{ request.args.get('idea') or (active_idea.idea if active_idea else '') }}</textarea>
+        <textarea id="idea" name="idea" rows="3" required></textarea>
 
         <label>Ne oluşturmak istiyorsun?</label>
         <div class="radio-group">

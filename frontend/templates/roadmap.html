@@ -10,8 +10,9 @@
     {% if error %}<p class="error">{{ error }}</p>{% endif %}
 
     <form method="POST" action="{{ url_for('roadmap.generate_roadmap') }}" class="form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label for="idea">Fikrin nedir?</label>
-        <textarea id="idea" name="idea" rows="3" required>{{ request.args.get('idea') or (active_idea.idea if active_idea else '') }}</textarea>
+        <textarea id="idea" name="idea" rows="3" required></textarea>
 
         <label for="tech_capacity">Teknik kapasiten nedir? (opsiyonel)</label>
         <input type="text" id="tech_capacity" name="tech_capacity" placeholder="örn. tek kişi, kod yazabiliyorum">

@@ -10,11 +10,12 @@
     {% if error %}<p class="error">{{ error }}</p>{% endif %}
 
     <form method="POST" action="{{ url_for('swot.analyze_swot') }}" class="form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label for="idea">Fikrin nedir?</label>
-        <textarea id="idea" name="idea" rows="3" required>{{ request.args.get('idea') or (active_idea.idea if active_idea else '') }}</textarea>
+        <textarea id="idea" name="idea" rows="3" required></textarea>
 
         <label for="sector">Sektör (opsiyonel)</label>
-        <input type="text" id="sector" name="sector" value="{{ active_idea.sector if active_idea else '' }}">
+        <input type="text" id="sector" name="sector">
 
         <button type="submit">SWOT Çıkar</button>
     </form>

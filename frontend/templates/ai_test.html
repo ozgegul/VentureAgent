@@ -15,6 +15,7 @@
     {% endif %}
 
     <form method="POST" action="{{ url_for('ai_test.ai_test_page') }}" class="form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label for="prompt">Test promptu</label>
         <textarea id="prompt" name="prompt" rows="4" required>{{ prompt }}</textarea>
 

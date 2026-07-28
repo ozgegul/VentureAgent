@@ -8,22 +8,34 @@ entegre edilmesi önerilir — bkz. README.
 """
 
 from flask import Blueprint, render_template, request
+from backend.auth import current_user, login_required
+from backend.database import save_module_result
 from backend.services.ai_client import ask_ai, safe_parse_json
-from backend.services.context import append_analysis, build_enriched_prompt, get_active_idea
-from backend.services.prompts import get_prompt, get_prompt_schema
 
 competitors_bp = Blueprint("competitors", __name__, template_folder="../../frontend/templates")
 
-SYSTEM_PROMPT = get_prompt("competitors")
+SYSTEM_PROMPT = """Sen bir pazar araştırması uzmanısın. Verilen girişim fikri
+için olası rakipleri ve konumlandırma önerisini üret. Cevabını SADECE şu JSON
+şemasına uygun ver:
+
+{
+  "competitors": [
+    {"name": "...", "description": "...", "strengths": ["..."], "weaknesses": ["..."]}
+  ],
+  "positioning_advice": "..."
+}
+
+3-5 rakip öner. Türkçe yaz."""
 
 
 @competitors_bp.route("/", methods=["GET"])
+@login_required
 def competitors_form():
-    ctx = get_active_idea()
-    return render_template("competitors.html", result=None, active_idea=ctx)
+    return render_template("competitors.html", result=None)
 
 
 @competitors_bp.route("/analyze", methods=["POST"])
+@login_required
 def analyze_competitors():
     idea = request.form.get("idea", "").strip()
     sector = request.form.get("sector", "").strip()
@@ -32,24 +44,28 @@ def analyze_competitors():
     if not idea:
         return render_template("competitors.html", result=None, error="Fikir alanı zorunludur.")
 
-    user_prompt = f"Fikir: {idea}\nSektör: {sector or 'belirtilmedi'}\nPazar bölgesi: {region or 'belirtilmedi'}"
+    user_prompt = (
+        f"Fikir: {idea}\n"
+        f"Sektör: {sector or 'belirtilmedi'}\n"
+        f"Pazar bölgesi: {region or 'belirtilmedi'}"
+    )
 
     try:
-        enriched_system = build_enriched_prompt("competitors", SYSTEM_PROMPT)
         raw = ask_ai(
             user_prompt=user_prompt,
-            system_prompt=enriched_system,
+            system_prompt=SYSTEM_PROMPT,
             max_tokens=1400,
             json_mode=True,
-            module="competitors",
-            task_complexity="medium",
-            response_schema=get_prompt_schema("competitors"),
         )
         result = safe_parse_json(raw)
     except Exception as exc:  # noqa: BLE001
         return render_template("competitors.html", result=None, error=f"Analiz sırasında hata oluştu: {exc}")
 
-    # Phase 3: Store competitors result for downstream modules
-    append_analysis("competitors", result)
-
+    save_module_result(
+        user_id=current_user()["id"],
+        module="competitors",
+        idea=idea,
+        input_data={"sector": sector, "region": region},
+        result_data=result,
+    )
     return render_template("competitors.html", result=result)

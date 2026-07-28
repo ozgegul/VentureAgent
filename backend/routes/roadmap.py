@@ -1,22 +1,34 @@
 """MVP roadmap oluşturma modülü."""
 
 from flask import Blueprint, render_template, request
+from backend.auth import current_user, login_required
+from backend.database import save_module_result
 from backend.services.ai_client import ask_ai, safe_parse_json
-from backend.services.context import append_analysis, build_enriched_prompt, get_active_idea
-from backend.services.prompts import get_prompt, get_prompt_schema
 
 roadmap_bp = Blueprint("roadmap", __name__, template_folder="../../frontend/templates")
 
-SYSTEM_PROMPT = get_prompt("roadmap")
+SYSTEM_PROMPT = """Sen bir ürün yöneticisisin. Verilen girişim fikri için MVP'ye
+giden bir yol haritası (roadmap) oluştur. Cevabını SADECE şu JSON şemasına
+uygun ver:
+
+{
+  "items": [
+    {"phase": "mvp", "title": "...", "description": "...", "estimated_weeks": 2}
+  ]
+}
+
+"phase" değeri şunlardan biri olmalı: "mvp", "beta", "launch", "growth".
+Toplam 6-10 madde üret, mantıklı sırada. Türkçe yaz."""
 
 
 @roadmap_bp.route("/", methods=["GET"])
+@login_required
 def roadmap_form():
-    ctx = get_active_idea()
-    return render_template("roadmap.html", result=None, active_idea=ctx)
+    return render_template("roadmap.html", result=None)
 
 
 @roadmap_bp.route("/generate", methods=["POST"])
+@login_required
 def generate_roadmap():
     idea = request.form.get("idea", "").strip()
     tech_capacity = request.form.get("tech_capacity", "").strip()
@@ -32,21 +44,21 @@ def generate_roadmap():
     )
 
     try:
-        enriched_system = build_enriched_prompt("roadmap", SYSTEM_PROMPT)
         raw = ask_ai(
             user_prompt=user_prompt,
-            system_prompt=enriched_system,
+            system_prompt=SYSTEM_PROMPT,
             max_tokens=1400,
             json_mode=True,
-            module="roadmap",
-            task_complexity="high",
-            response_schema=get_prompt_schema("roadmap"),
         )
         result = safe_parse_json(raw)
     except Exception as exc:  # noqa: BLE001
         return render_template("roadmap.html", result=None, error=f"Oluşturma sırasında hata oluştu: {exc}")
 
-    # Phase 3: Store roadmap result for downstream modules
-    append_analysis("roadmap", result)
-
+    save_module_result(
+        user_id=current_user()["id"],
+        module="roadmap",
+        idea=idea,
+        input_data={"tech_capacity": tech_capacity, "budget": budget},
+        result_data=result,
+    )
     return render_template("roadmap.html", result=result)
