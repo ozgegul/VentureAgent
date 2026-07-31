@@ -3,55 +3,67 @@
 {% block title %}Sohbet — VentureAgent{% endblock %}
 
 {% block content %}
-    <span class="eyebrow">Serbest sohbet</span>
-    <h1>Fikrini anlat, birlikte geliştirelim</h1>
-    <p class="subtitle">
-        Pazar araştırması iste, TR ve yurtdışı karşılaştırması yaptır, fikrini
-        büyütmek için fikir al. Yapılandırılmış çıktı istersen
-        (SWOT, roadmap, pitch vb.) ilgili modüle de yönlendirebilirim.
-    </p>
+<span class="eyebrow">Serbest sohbet</span>
+<h1>Fikrini anlat, birlikte geliştirelim</h1>
+<p class="subtitle">
+    Pazar araştırması iste, TR ve yurtdışı karşılaştırması yaptır, fikrini
+    büyütmek için fikir al. Yapılandırılmış çıktı istersen
+    (SWOT, roadmap, pitch vb.) ilgili modüle de yönlendirebilirim.
+</p>
 
-    <div id="chat-window">
-        <div id="chat-messages">
-            {% for msg in history %}
-                <div class="chat-bubble chat-{{ msg.role }}">{{ msg.content }}</div>
-            {% endfor %}
-        </div>
-
-        <div id="chat-input-row">
-            <textarea id="chat-input" rows="2" placeholder="örn. Öğrenciler için bir ikinci el kitap platformu fikrim var, TR ve ABD pazarını karşılaştırır mısın?"></textarea>
-            <button id="chat-send">Gönder</button>
-        </div>
-        <button id="chat-reset" type="button">Sohbeti sıfırla</button>
+<div id="chat-window">
+    <div id="chat-messages">
+        {% for msg in history %}
+        <div class="chat-bubble chat-{{ msg.role }}">{{ msg.content }}</div>
+        {% endfor %}
     </div>
 
-    {% if is_pro %}
-        <div class="pro-upsell pro-upsell-active">
-            <div class="pro-upsell-icon">✓</div>
-            <div>
-                <strong>Pro hesabındasın</strong>
-                <p>Dosya ve ses ile mesaj gönderme çok yakında burada aktif olacak.</p>
+    <div id="chat-input-row" style="display: flex; gap: 12px; align-items: stretch;">
+        <input type="file" id="chat-file" accept="image/*,.pdf,.txt,audio/*" style="display: none;">
+        <textarea id="chat-input" rows="3" style="flex: 1; resize: none; padding: 12px; border-radius: 8px; border: 1px solid #ccc;"
+            placeholder="örn. Öğrenciler için bir ikinci el kitap platformu fikrim var, TR ve ABD pazarını karşılaştırır mısın?"></textarea>
+        
+        <div style="display: flex; flex-direction: column; gap: 8px; min-width: 110px;">
+            <button id="chat-send" style="flex: 1; padding: 12px 16px; font-weight: 600; font-size: 1.05em; border-radius: 8px; border: none; cursor: pointer;">Gönder</button>
+            <div style="display: flex; gap: 8px;">
+                <button id="chat-attach-btn" title="Dosya ekle"
+                    style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #ccc; background: white; cursor: pointer; display: flex; justify-content: center; align-items: center;">📎</button>
+                <button id="chat-mic-btn" title="Ses kaydet"
+                    style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #ccc; background: white; cursor: pointer; display: flex; justify-content: center; align-items: center;">🎤</button>
             </div>
         </div>
-    {% elif g.user %}
-        <div class="pro-upsell">
-            <div class="pro-upsell-icon">🔒</div>
-            <div class="pro-upsell-body">
-                <strong>Dosya ve ses ile mesaj gönder</strong>
-                <p>Belge yükle, sesli not bırak — Pro hesaplarda kullanılabilir.</p>
-            </div>
-            <a href="{{ url_for('auth.upgrade_page') }}" class="cta-button small">Pro'ya geç →</a>
-        </div>
-    {% else %}
-        <div class="pro-upsell">
-            <div class="pro-upsell-icon">🔒</div>
-            <div class="pro-upsell-body">
-                <strong>Dosya ve ses ile mesaj gönder</strong>
-                <p>Bu özellik Pro hesaplarda kullanılabilir. Önce ücretsiz bir hesap oluştur.</p>
-            </div>
-            <a href="{{ url_for('auth.register') }}" class="cta-button small">Kayıt ol →</a>
-        </div>
-    {% endif %}
+    </div>
+    <div id="chat-attachments-preview" style="display: flex; gap: 10px; margin-top: 10px;"></div>
+    <button id="chat-reset" type="button">Sohbeti sıfırla</button>
+</div>
 
-    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+{% if is_pro %}
+<div class="pro-upsell pro-upsell-active">
+    <div class="pro-upsell-icon">✓</div>
+    <div>
+        <strong>Pro hesabındasın</strong>
+        <p>Dosya ve ses yükleme limitiniz: Sınırsız.</p>
+    </div>
+</div>
+{% elif g.user %}
+<div class="pro-upsell">
+    <div class="pro-upsell-icon">🔒</div>
+    <div class="pro-upsell-body">
+        <strong>Dosya ve ses ile mesaj gönder</strong>
+        <p>Belge yükle, sesli not bırak — Pro hesaplarda kullanılabilir.</p>
+    </div>
+    <a href="{{ url_for('auth.upgrade_page') }}" class="cta-button small">Pro'ya geç →</a>
+</div>
+{% else %}
+<div class="pro-upsell">
+    <div class="pro-upsell-icon">🔒</div>
+    <div class="pro-upsell-body">
+        <strong>Dosya ve ses ile mesaj gönder</strong>
+        <p>Bu özellik Pro hesaplarda kullanılabilir. Önce ücretsiz bir hesap oluştur.</p>
+    </div>
+    <a href="{{ url_for('auth.register') }}" class="cta-button small">Kayıt ol →</a>
+</div>
+{% endif %}
+
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
 {% endblock %}

@@ -12,10 +12,10 @@
     <form method="POST" action="{{ url_for('swot.analyze_swot') }}" class="form">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label for="idea">Fikrin nedir?</label>
-        <textarea id="idea" name="idea" rows="3" required></textarea>
+        <textarea id="idea" name="idea" rows="3" required>{{ active_idea.idea if active_idea else '' }}</textarea>
 
         <label for="sector">Sektör (opsiyonel)</label>
-        <input type="text" id="sector" name="sector">
+        <input type="text" id="sector" name="sector" value="{{ active_idea.sector if active_idea else '' }}">
 
         <button type="submit">SWOT Çıkar</button>
     </form>

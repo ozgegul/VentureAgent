@@ -285,3 +285,6 @@ def get_prompt_schema(module: str) -> dict | None:
 def list_modules() -> list[str]:
     """Return all registered module names."""
     return list(_PROMPTS.keys())
+
+# Alias for backward compatibility
+get_schema = get_prompt_schema

@@ -13,7 +13,7 @@
     <form method="POST" action="{{ url_for('kanban.generate_kanban') }}" class="form">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label for="idea">Fikrin nedir?</label>
-        <textarea id="idea" name="idea" rows="3" required></textarea>
+        <textarea id="idea" name="idea" rows="3" required>{{ active_idea.idea if active_idea else '' }}</textarea>
         <button type="submit">Görevleri Oluştur</button>
     </form>
 
