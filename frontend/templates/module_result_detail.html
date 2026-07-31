@@ -14,6 +14,9 @@
 
     <div class="detail-actions">
         <a href="{{ url_for('history.history_page') }}">← Geçmişe dön</a>
+        {% if result.module == 'swot' %}
+            <a href="{{ url_for('swot.download_swot_pdf', result_id=result.id) }}" class="secondary-button small">PDF olarak indir ↓</a>
+        {% endif %}
         <form method="POST" action="{{ url_for('history.delete_module_result_item', result_id=result.id) }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button type="submit" class="danger-button" onclick="return confirm('Bu kaydı silmek istediğine emin misin?')">Kaydı Sil</button>

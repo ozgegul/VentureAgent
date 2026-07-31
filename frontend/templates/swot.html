@@ -21,6 +21,9 @@
     </form>
 
     {% if swot %}
+        <div class="swot-actions">
+            <a href="{{ url_for('swot.download_swot_pdf', result_id=result_id) }}" class="secondary-button small">PDF olarak indir ↓</a>
+        </div>
         <div class="swot-grid">
             <div class="swot-cell swot-strengths">
                 <h3>Güçlü Yönler</h3>

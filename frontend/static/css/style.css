@@ -877,7 +877,8 @@ code {
 .result pre { white-space: pre-wrap; font-family: inherit; margin: 0; }
 .error { color: var(--danger); background: rgba(239, 106, 77, 0.1); border: 1px solid rgba(239, 106, 77, 0.28); padding: 0.75rem 1rem; border-radius: var(--radius); }
 
-.swot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.3rem; }
+.swot-actions { display: flex; justify-content: flex-end; margin-top: 1.3rem; }
+.swot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.6rem; }
 .swot-cell { padding: 1.05rem; border-left: 5px solid var(--teal); }
 .swot-cell:nth-child(2) { border-left-color: var(--coral); }
 .swot-cell:nth-child(3) { border-left-color: var(--amber); }
