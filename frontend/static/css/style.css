@@ -402,6 +402,7 @@ code {
     font-family: var(--font-display);
     font-size: 2.25rem;
 }
+.score-ring-caption { text-align: center; margin: -0.4rem 0 0.85rem; color: rgba(248,240,228,0.68); font-size: 0.76rem; }
 .signal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; }
 .signal-card {
     background: rgba(255,255,255,0.08);
@@ -414,6 +415,54 @@ code {
 .signal-card:nth-child(2) { border-top: 3px solid var(--coral); }
 .signal-card:nth-child(3) { border-top: 3px solid var(--amber); }
 .signal-card:nth-child(4) { border-top: 3px solid var(--violet); }
+
+.cockpit-stat {
+    display: block;
+    width: 100%;
+    font-family: inherit;
+    color: inherit;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+.cockpit-stat:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+.cockpit-stat-ring {
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0.2rem 0 0;
+    text-align: center;
+    border-radius: 12px;
+    transition: background 0.15s ease;
+}
+.cockpit-stat-ring:hover { background: rgba(255,255,255,0.05); }
+.signal-card.cockpit-stat { text-align: left; transition: border-color 0.15s ease; }
+.signal-card.cockpit-stat:hover { border-color: var(--teal); }
+
+.cockpit-chart { margin-top: 0.85rem; padding-top: 0.85rem; border-top: 1px solid rgba(255,255,255,0.12); }
+.cockpit-chart-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; }
+.cockpit-chart-title { margin: 0; color: #fffaf2; font-size: 0.82rem; font-weight: 700; }
+.cockpit-chart-close {
+    background: none;
+    border: none;
+    color: rgba(248,240,228,0.68);
+    font-size: 0.8rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.25rem 0.4rem;
+    border-radius: 4px;
+}
+.cockpit-chart-close:hover { color: #fffaf2; background: rgba(255,255,255,0.1); }
+
+.bar-chart-h { display: flex; flex-direction: column; gap: 0.5rem; }
+.bar-chart-h-row { display: grid; grid-template-columns: 6.5rem 1fr 1.6rem; align-items: center; gap: 0.55rem; }
+.bar-chart-h-label { color: rgba(248,240,228,0.68); font-size: 0.72rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar-chart-h-track { display: block; height: 14px; border-radius: 4px; background: rgba(255,255,255,0.1); overflow: hidden; }
+.bar-chart-h-fill { display: block; height: 100%; background: var(--teal); border-radius: 0 4px 4px 0; min-width: 2px; }
+.bar-chart-h-value { color: #fffaf2; font-size: 0.78rem; font-weight: 700; text-align: right; }
+
+.bar-chart-v { display: flex; align-items: flex-end; gap: 3px; height: 72px; padding-top: 0.2rem; border-bottom: 1px solid rgba(255,255,255,0.15); }
+.bar-chart-v-col { flex: 1; display: flex; align-items: flex-end; height: 100%; }
+.bar-chart-v-bar { display: block; width: 100%; min-height: 2px; background: var(--teal); border-radius: 4px 4px 0 0; }
 
 .hero-chat-teaser {
     margin-top: 1.5rem;
@@ -885,5 +934,7 @@ code {
     .metric-grid,
     .dashboard-grid { grid-template-columns: 1fr; }
     .signal-grid { grid-template-columns: 1fr; }
+    .bar-chart-h-row { grid-template-columns: 5.2rem 1fr 1.4rem; gap: 0.4rem; }
+    .bar-chart-h-label { font-size: 0.68rem; }
     .chat-bubble { max-width: 92%; }
 }

@@ -20,28 +20,76 @@
             </div>
         </div>
 
-        <aside class="cockpit-panel" aria-label="VentureAgent analiz paneli">
+        <aside class="cockpit-panel" aria-label="VentureAgent platform istatistikleri">
             <div class="cockpit-top">
                 <span class="status-dot"></span>
-                <span class="cockpit-label">Live venture scan</span>
+                <span class="cockpit-label">Canlı platform verisi — detay için tıkla</span>
             </div>
-            <div class="score-ring"><span>76</span></div>
+
+            <button type="button" class="cockpit-stat cockpit-stat-ring" data-chart-target="chart-risk" aria-expanded="false" aria-controls="chart-risk">
+                <span class="score-ring" style="background: conic-gradient(var(--teal) 0 {{ stats.average_score }}%, rgba(255,255,255,0.13) {{ stats.average_score }}% 100%);">
+                    <span>{{ stats.average_score }}</span>
+                </span>
+                <span class="score-ring-caption">Ortalama Venture Score</span>
+            </button>
+
             <div class="signal-grid">
-                <div class="signal-card">
-                    <strong>8/10</strong>
-                    <span>Problem netliği</span>
+                <button type="button" class="signal-card cockpit-stat" data-chart-target="chart-users" aria-expanded="false" aria-controls="chart-users">
+                    <strong>{{ stats.total_users }}</strong>
+                    <span>Kayıtlı kullanıcı</span>
+                </button>
+                <button type="button" class="signal-card cockpit-stat" data-chart-target="chart-analyses" aria-expanded="false" aria-controls="chart-analyses">
+                    <strong>{{ stats.total_analyses }}</strong>
+                    <span>Yapılan analiz</span>
+                </button>
+            </div>
+
+            <div class="cockpit-chart" id="chart-risk" hidden>
+                <div class="cockpit-chart-head">
+                    <p class="cockpit-chart-title">Risk seviyesi dağılımı</p>
+                    <button type="button" class="cockpit-chart-close" aria-label="Grafiği kapat">✕</button>
                 </div>
-                <div class="signal-card">
-                    <strong>5</strong>
-                    <span>Rakip kümesi</span>
+                {% set max_risk = risk_distribution | map(attribute='count') | max if risk_distribution else 0 %}
+                <div class="bar-chart-h">
+                    {% for item in risk_distribution %}
+                        <div class="bar-chart-h-row">
+                            <span class="bar-chart-h-label">{{ item.label }}</span>
+                            <span class="bar-chart-h-track"><span class="bar-chart-h-fill" style="width: {{ (item.count / max_risk * 100) if max_risk else 0 }}%;"></span></span>
+                            <span class="bar-chart-h-value">{{ item.count }}</span>
+                        </div>
+                    {% endfor %}
                 </div>
-                <div class="signal-card">
-                    <strong>3</strong>
-                    <span>Gelir yolu</span>
+            </div>
+
+            <div class="cockpit-chart" id="chart-users" hidden>
+                <div class="cockpit-chart-head">
+                    <p class="cockpit-chart-title">Son 14 günde yeni kayıt</p>
+                    <button type="button" class="cockpit-chart-close" aria-label="Grafiği kapat">✕</button>
                 </div>
-                <div class="signal-card">
-                    <strong>MVP</strong>
-                    <span>Sonraki odak</span>
+                {% set max_growth = user_growth | map(attribute='count') | max if user_growth else 0 %}
+                <div class="bar-chart-v">
+                    {% for day in user_growth %}
+                        <span class="bar-chart-v-col" title="{{ day.date }}: {{ day.count }} kayıt">
+                            <span class="bar-chart-v-bar" style="height: {{ (day.count / max_growth * 100) if max_growth else 0 }}%;"></span>
+                        </span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="cockpit-chart" id="chart-analyses" hidden>
+                <div class="cockpit-chart-head">
+                    <p class="cockpit-chart-title">Modül kullanım dağılımı</p>
+                    <button type="button" class="cockpit-chart-close" aria-label="Grafiği kapat">✕</button>
+                </div>
+                {% set max_module = module_usage | map(attribute='count') | max if module_usage else 0 %}
+                <div class="bar-chart-h">
+                    {% for item in module_usage %}
+                        <div class="bar-chart-h-row">
+                            <span class="bar-chart-h-label">{{ item.label }}</span>
+                            <span class="bar-chart-h-track"><span class="bar-chart-h-fill" style="width: {{ (item.count / max_module * 100) if max_module else 0 }}%;"></span></span>
+                            <span class="bar-chart-h-value">{{ item.count }}</span>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         </aside>
@@ -107,4 +155,8 @@
             <a href="{{ url_for('pitch.pitch_form') }}">Başla →</a>
         </div>
     </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/homepage-charts.js') }}"></script>
 {% endblock %}
