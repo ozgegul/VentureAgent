@@ -10,11 +10,12 @@ from backend.auth import current_user, login_required
 from backend.database import save_idea_analysis
 from backend.services.ai_client import ask_ai
 from data_science.pipelines.market_scoring import StartupSignal, build_venture_score
+from backend.services.prompts import get_prompt, get_schema
+from backend.services.context import set_active_idea, append_analysis
 
 idea_bp = Blueprint("idea", __name__, template_folder="../../frontend/templates")
 
-SYSTEM_PROMPT = """Sen deneyimli bir startup mentörüsün. Kullanıcının girişim
-fikrini analiz et. Net, yapıcı ve uygulanabilir geri bildirim ver. Türkçe cevap ver."""
+SYSTEM_PROMPT = get_prompt("idea")
 
 
 @idea_bp.route("/", methods=["GET"])
@@ -77,7 +78,13 @@ Bu fikri şu başlıklarla değerlendir:
 """
 
     try:
-        analysis = ask_ai(user_prompt=user_prompt, system_prompt=SYSTEM_PROMPT, max_tokens=1200)
+        analysis = ask_ai(
+            user_prompt=user_prompt,
+            system_prompt=SYSTEM_PROMPT,
+            max_tokens=1200,
+            module="idea",
+            task_complexity="medium",
+        )
     except Exception as exc:  # noqa: BLE001
         save_idea_analysis(
             user_id=user_id,
@@ -91,6 +98,8 @@ Bu fikri şu başlıklarla değerlendir:
         )
         return render_template("idea.html", analysis=None, venture_score=venture_score, error=str(exc))
 
+    set_active_idea(idea, sector, problem)
+    append_analysis("idea", {"venture_score": venture_score.score})
     save_idea_analysis(
         user_id=user_id,
         idea=idea,

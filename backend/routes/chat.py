@@ -14,24 +14,12 @@ yapı için ileride veritabanına taşınabilir.
 from flask import Blueprint, render_template, request, jsonify, session
 from backend.auth import is_pro
 from backend.services.ai_client import ask_ai_conversation
+from backend.services.prompts import get_prompt, get_schema
+from backend.services.intent_router import classify_intent
 
 chat_bp = Blueprint("chat", __name__, template_folder="../../frontend/templates")
 
-SYSTEM_PROMPT = """Sen VentureAgent'sın — girişimcilerin fikir ortağı
-gibi davranan bir yapay zekasın. Görevin:
-
-1. Girişim fikirlerini sorgulamak ve netleştirmek (doğru sorular sorarak)
-2. Pazar araştırması yapmak (sektör büyüklüğü, trendler, potansiyel)
-3. Türkiye ve yurtdışı (özellikle ABD/Avrupa) pazarlarını karşılaştırmak —
-   farklılıkları, fırsatları ve riskleri somut şekilde belirtmek
-4. Fikirleri büyütmek için yeni açılar, özellikler veya pivot önerileri üretmek
-5. Gerektiğinde SWOT, rakip analizi, gelir modeli, roadmap gibi daha
-   yapılandırılmış çıktılar için sitenin ilgili modülüne yönlendirmek
-
-Kısa, net ve uygulanabilir cevaplar ver. Genel geçer motivasyon cümleleri
-kurma; somut veri, örnek ve aksiyon öner. Türkçe konuş. Emin olmadığın güncel
-sayısal veriler (pazar büyüklüğü, yatırım rakamları vb.) için tahmini
-olduğunu belirt, uydurma kesin rakam verme."""
+SYSTEM_PROMPT = get_prompt("chat")
 
 
 @chat_bp.route("/", methods=["GET"])
@@ -44,26 +32,47 @@ def chat_page():
 def send_message():
     data = request.get_json(silent=True) or {}
     user_message = (data.get("message") or "").strip()
-
-    if not user_message:
-        return jsonify({"error": "Mesaj boş olamaz."}), 400
+    attachments = data.get("attachments", [])
+    
+    if not user_message and not attachments:
+        return jsonify({"error": "Mesaj veya dosya boş olamaz."}), 400
 
     history = session.get("chat_history", [])
-    history.append({"role": "user", "content": user_message})
+    
+    # We pass the full attachments to AI, but do not save them to session to avoid CookieTooLarge
+    current_msg = {"role": "user", "content": user_message}
+    if attachments:
+        current_msg["attachments"] = attachments
+        
+    request_history = list(history)
+    request_history.append(current_msg)
 
     try:
         reply = ask_ai_conversation(
-            messages=history,
+            messages=request_history,
             system_prompt=SYSTEM_PROMPT,
-            max_tokens=1200,
+            max_tokens=4000,
+            module="chat",
+            task_complexity="medium",
         )
     except Exception as exc:  # noqa: BLE001
         return jsonify({"error": str(exc)}), 500
 
+    # Only append text-based summary to the session history to prevent 4KB cookie limits
+    history_user_msg = user_message
+    if attachments:
+        history_user_msg += f" [{len(attachments)} dosya eklendi]"
+        
+    history.append({"role": "user", "content": history_user_msg})
     history.append({"role": "assistant", "content": reply})
     session["chat_history"] = history
 
-    return jsonify({"reply": reply})
+    intent = classify_intent(user_message, history)
+    
+    return jsonify({
+        "reply": reply,
+        "suggested_route": intent
+    })
 
 
 @chat_bp.route("/reset", methods=["POST"])

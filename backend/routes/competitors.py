@@ -11,27 +11,18 @@ from flask import Blueprint, render_template, request
 from backend.auth import current_user, login_required
 from backend.database import save_module_result
 from backend.services.ai_client import ask_ai, safe_parse_json
+from backend.services.prompts import get_prompt, get_schema
+from backend.services.context import get_active_idea, append_analysis, build_enriched_prompt
 
 competitors_bp = Blueprint("competitors", __name__, template_folder="../../frontend/templates")
 
-SYSTEM_PROMPT = """Sen bir pazar araştırması uzmanısın. Verilen girişim fikri
-için olası rakipleri ve konumlandırma önerisini üret. Cevabını SADECE şu JSON
-şemasına uygun ver:
-
-{
-  "competitors": [
-    {"name": "...", "description": "...", "strengths": ["..."], "weaknesses": ["..."]}
-  ],
-  "positioning_advice": "..."
-}
-
-3-5 rakip öner. Türkçe yaz."""
+SYSTEM_PROMPT = get_prompt("competitors")
 
 
 @competitors_bp.route("/", methods=["GET"])
 @login_required
 def competitors_form():
-    return render_template("competitors.html", result=None)
+    return render_template("competitors.html", result=None, active_idea=get_active_idea())
 
 
 @competitors_bp.route("/analyze", methods=["POST"])
@@ -42,7 +33,7 @@ def analyze_competitors():
     region = request.form.get("region", "").strip()
 
     if not idea:
-        return render_template("competitors.html", result=None, error="Fikir alanı zorunludur.")
+        return render_template("competitors.html", result=None, error="Fikir alanı zorunludur.", active_idea=get_active_idea())
 
     user_prompt = (
         f"Fikir: {idea}\n"
@@ -53,14 +44,18 @@ def analyze_competitors():
     try:
         raw = ask_ai(
             user_prompt=user_prompt,
-            system_prompt=SYSTEM_PROMPT,
+            system_prompt=build_enriched_prompt("competitors", SYSTEM_PROMPT),
             max_tokens=1400,
             json_mode=True,
+            module="competitors",
+            task_complexity="medium",
+            response_schema=get_schema("competitors"),
         )
-        result = safe_parse_json(raw)
+        result = safe_parse_json(raw, get_schema("competitors"))
     except Exception as exc:  # noqa: BLE001
-        return render_template("competitors.html", result=None, error=f"Analiz sırasında hata oluştu: {exc}")
+        return render_template("competitors.html", result=None, error=f"Analiz sırasında hata oluştu: {exc}", active_idea=get_active_idea())
 
+    append_analysis("competitors", locals().get("competitors") or locals().get("result") or locals().get("kanban"))
     save_module_result(
         user_id=current_user()["id"],
         module="competitors",
@@ -68,4 +63,4 @@ def analyze_competitors():
         input_data={"sector": sector, "region": region},
         result_data=result,
     )
-    return render_template("competitors.html", result=result)
+    return render_template("competitors.html", result=result, active_idea=get_active_idea())

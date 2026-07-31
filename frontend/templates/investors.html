@@ -12,7 +12,7 @@
     <form method="POST" action="{{ url_for('investors.advise_investors') }}" class="form">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label for="idea">Fikrin nedir?</label>
-        <textarea id="idea" name="idea" rows="3" required></textarea>
+        <textarea id="idea" name="idea" rows="3" required>{{ active_idea.idea if active_idea else '' }}</textarea>
 
         <label for="stage">Aşama (opsiyonel)</label>
         <select id="stage" name="stage">

@@ -4,28 +4,18 @@ from flask import Blueprint, render_template, request
 from backend.auth import current_user, login_required
 from backend.database import save_module_result
 from backend.services.ai_client import ask_ai, safe_parse_json
+from backend.services.prompts import get_prompt, get_schema
+from backend.services.context import get_active_idea, append_analysis, build_enriched_prompt
 
 revenue_bp = Blueprint("revenue", __name__, template_folder="../../frontend/templates")
 
-SYSTEM_PROMPT = """Sen bir iş modeli danışmanısın. Verilen girişim fikri için
-uygun gelir modellerini öner. Cevabını SADECE şu JSON şemasına uygun ver:
-
-{
-  "models": [
-    {"name": "...", "description": "...", "pros": ["..."], "cons": ["..."]}
-  ],
-  "recommended": "..."
-}
-
-2-4 gelir modeli öner (örn. abonelik, komisyon, freemium, tek seferlik satış,
-reklam). "recommended" alanında hangisini neden önerdiğini kısaca açıkla.
-Türkçe yaz."""
+SYSTEM_PROMPT = get_prompt("revenue")
 
 
 @revenue_bp.route("/", methods=["GET"])
 @login_required
 def revenue_form():
-    return render_template("revenue.html", result=None)
+    return render_template("revenue.html", result=None, active_idea=get_active_idea())
 
 
 @revenue_bp.route("/analyze", methods=["POST"])
@@ -36,7 +26,7 @@ def analyze_revenue():
     pricing_preference = request.form.get("pricing_preference", "").strip()
 
     if not idea:
-        return render_template("revenue.html", result=None, error="Fikir alanı zorunludur.")
+        return render_template("revenue.html", result=None, error="Fikir alanı zorunludur.", active_idea=get_active_idea())
 
     user_prompt = (
         f"Fikir: {idea}\n"
@@ -47,14 +37,18 @@ def analyze_revenue():
     try:
         raw = ask_ai(
             user_prompt=user_prompt,
-            system_prompt=SYSTEM_PROMPT,
+            system_prompt=build_enriched_prompt("revenue", SYSTEM_PROMPT),
             max_tokens=1200,
             json_mode=True,
+            module="revenue",
+            task_complexity="medium",
+            response_schema=get_schema("revenue"),
         )
-        result = safe_parse_json(raw)
+        result = safe_parse_json(raw, get_schema("revenue"))
     except Exception as exc:  # noqa: BLE001
-        return render_template("revenue.html", result=None, error=f"Analiz sırasında hata oluştu: {exc}")
+        return render_template("revenue.html", result=None, error=f"Analiz sırasında hata oluştu: {exc}", active_idea=get_active_idea())
 
+    append_analysis("revenue", locals().get("revenue") or locals().get("result") or locals().get("kanban"))
     save_module_result(
         user_id=current_user()["id"],
         module="revenue",
@@ -62,4 +56,4 @@ def analyze_revenue():
         input_data={"target_audience": target_audience, "pricing_preference": pricing_preference},
         result_data=result,
     )
-    return render_template("revenue.html", result=result)
+    return render_template("revenue.html", result=result, active_idea=get_active_idea())
