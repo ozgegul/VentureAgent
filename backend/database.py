@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -452,6 +453,172 @@ def get_dashboard_metrics(user_id: int) -> dict[str, Any]:
         "sector_distribution": [dict(row) for row in sector_rows],
         "top_ideas": [dict(row) for row in top_rows],
     }
+
+
+def get_homepage_stats(user_id: int | None = None) -> dict[str, Any]:
+    """Return cockpit-panel totals: site-wide, or scoped to one user if `user_id` is given."""
+    db = get_db()
+    if user_id is None:
+        total_users = db.execute("SELECT COUNT(*) AS count FROM users").fetchone()["count"]
+        total_idea_analyses = db.execute(
+            "SELECT COUNT(*) AS count FROM idea_analyses"
+        ).fetchone()["count"]
+        total_module_results = db.execute(
+            "SELECT COUNT(*) AS count FROM module_results"
+        ).fetchone()["count"]
+        average_score = db.execute(
+            "SELECT ROUND(AVG(venture_score)) AS avg FROM idea_analyses"
+        ).fetchone()["avg"]
+        return {
+            "total_users": total_users,
+            "total_analyses": total_idea_analyses + total_module_results,
+            "average_score": int(average_score) if average_score is not None else 0,
+        }
+
+    total_idea_analyses = db.execute(
+        "SELECT COUNT(*) AS count FROM idea_analyses WHERE user_id = ?", (user_id,)
+    ).fetchone()["count"]
+    total_module_results = db.execute(
+        "SELECT COUNT(*) AS count FROM module_results WHERE user_id = ?", (user_id,)
+    ).fetchone()["count"]
+    average_score = db.execute(
+        "SELECT ROUND(AVG(venture_score)) AS avg FROM idea_analyses WHERE user_id = ?", (user_id,)
+    ).fetchone()["avg"]
+    return {
+        "total_analyses": total_idea_analyses + total_module_results,
+        "average_score": int(average_score) if average_score is not None else 0,
+    }
+
+
+def get_user_growth_series(days: int = 14) -> list[dict[str, Any]]:
+    """Return new-signup counts per day for the last `days` days, zero-filled."""
+    db = get_db()
+    rows = db.execute(
+        """
+        SELECT DATE(created_at) AS day, COUNT(*) AS count
+        FROM users
+        WHERE DATE(created_at) >= DATE('now', ?)
+        GROUP BY DATE(created_at)
+        """,
+        (f"-{days - 1} day",),
+    ).fetchall()
+    counts_by_day = {row["day"]: row["count"] for row in rows}
+
+    today = datetime.utcnow().date()
+    return [
+        {
+            "date": (today - timedelta(days=offset)).strftime("%Y-%m-%d"),
+            "count": counts_by_day.get((today - timedelta(days=offset)).strftime("%Y-%m-%d"), 0),
+        }
+        for offset in range(days - 1, -1, -1)
+    ]
+
+
+def get_user_activity_series(user_id: int, days: int = 14) -> list[dict[str, Any]]:
+    """Return one user's own analysis counts per day for the last `days` days, zero-filled."""
+    db = get_db()
+    rows = db.execute(
+        """
+        SELECT DATE(created_at) AS day, COUNT(*) AS count FROM (
+            SELECT created_at FROM idea_analyses WHERE user_id = ?
+            UNION ALL
+            SELECT created_at FROM module_results WHERE user_id = ?
+        )
+        WHERE DATE(created_at) >= DATE('now', ?)
+        GROUP BY DATE(created_at)
+        """,
+        (user_id, user_id, f"-{days - 1} day"),
+    ).fetchall()
+    counts_by_day = {row["day"]: row["count"] for row in rows}
+
+    today = datetime.utcnow().date()
+    return [
+        {
+            "date": (today - timedelta(days=offset)).strftime("%Y-%m-%d"),
+            "count": counts_by_day.get((today - timedelta(days=offset)).strftime("%Y-%m-%d"), 0),
+        }
+        for offset in range(days - 1, -1, -1)
+    ]
+
+
+MODULE_LABELS = {
+    "idea": "Fikir Analizi",
+    "swot": "SWOT Analizi",
+    "competitors": "Rakip Araştırması",
+    "revenue": "Gelir Modeli",
+    "roadmap": "MVP Roadmap",
+    "kanban": "Kanban",
+    "investors": "Yatırımcı Tavsiyesi",
+    "pitch_elevator": "Pitch (Asansör)",
+    "pitch_deck": "Pitch (Deck)",
+}
+
+MODULE_ICONS = {
+    "idea": "💡",
+    "swot": "🎯",
+    "competitors": "🔍",
+    "revenue": "💰",
+    "roadmap": "🗺️",
+    "kanban": "📋",
+    "investors": "🤝",
+    "pitch_elevator": "🎤",
+    "pitch_deck": "📽️",
+}
+
+
+def get_module_usage_breakdown(user_id: int | None = None) -> list[dict[str, Any]]:
+    """Return saved-result counts per module, across idea analyses and module results.
+
+    Site-wide by default; scoped to one user when `user_id` is given.
+    """
+    db = get_db()
+    if user_id is None:
+        idea_count = db.execute("SELECT COUNT(*) AS count FROM idea_analyses").fetchone()["count"]
+        module_rows = db.execute(
+            "SELECT module, COUNT(*) AS count FROM module_results GROUP BY module"
+        ).fetchall()
+    else:
+        idea_count = db.execute(
+            "SELECT COUNT(*) AS count FROM idea_analyses WHERE user_id = ?", (user_id,)
+        ).fetchone()["count"]
+        module_rows = db.execute(
+            "SELECT module, COUNT(*) AS count FROM module_results WHERE user_id = ? GROUP BY module",
+            (user_id,),
+        ).fetchall()
+
+    counts = {"idea": idea_count}
+    for row in module_rows:
+        counts[row["module"]] = counts.get(row["module"], 0) + row["count"]
+
+    breakdown = [
+        {"module": key, "label": MODULE_LABELS.get(key, key), "icon": MODULE_ICONS.get(key, "📌"), "count": value}
+        for key, value in counts.items()
+        if value > 0
+    ]
+    breakdown.sort(key=lambda item: item["count"], reverse=True)
+    return breakdown
+
+
+def get_risk_level_distribution(user_id: int | None = None) -> list[dict[str, Any]]:
+    """Return idea-analysis counts grouped by risk level, in fixed low→high order.
+
+    Site-wide by default; scoped to one user when `user_id` is given.
+    """
+    db = get_db()
+    if user_id is None:
+        rows = db.execute(
+            "SELECT risk_level, COUNT(*) AS count FROM idea_analyses GROUP BY risk_level"
+        ).fetchall()
+    else:
+        rows = db.execute(
+            "SELECT risk_level, COUNT(*) AS count FROM idea_analyses WHERE user_id = ? GROUP BY risk_level",
+            (user_id,),
+        ).fetchall()
+    counts = {row["risk_level"]: row["count"] for row in rows}
+    return [
+        {"label": level, "count": counts.get(level, 0)}
+        for level in ("Düşük risk", "Orta risk", "Yüksek risk")
+    ]
 
 
 def get_platform_metrics() -> dict[str, Any]:
