@@ -1,32 +1,63 @@
-// VentureAgent - ana sayfa cockpit panelindeki istatistiklere tıklayınca ilgili grafiği aç/kapat
+// VentureAgent - ana sayfa cockpit paneli: alttaki sekmelere tıklayınca üstteki
+// görünüm (skor halkası / modül dağılımı / aktivite) değişir, bar'lar animasyonla dolar.
 
-document.querySelectorAll(".cockpit-stat[data-chart-target]").forEach((trigger) => {
-    trigger.addEventListener("click", () => {
-        const target = document.getElementById(trigger.getAttribute("data-chart-target"));
-        if (!target) return;
+function resetBars(view) {
+    view.querySelectorAll(".bar-chart-h-fill[data-target-width]").forEach((el) => {
+        el.style.width = "0%";
+    });
+    view.querySelectorAll(".bar-chart-v-bar[data-target-height]").forEach((el) => {
+        el.style.height = "0%";
+    });
+}
 
-        const wasOpen = !target.hidden;
-
-        document.querySelectorAll(".cockpit-chart").forEach((panel) => {
-            panel.hidden = true;
+function animateBars(view) {
+    // Bir sonraki frame'e ertelemezsek tarayıcı 0 -> hedef geçişini animasyon
+    // olarak değil, doğrudan son hal olarak uygular.
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            view.querySelectorAll(".bar-chart-h-fill[data-target-width]").forEach((el) => {
+                el.style.width = `${el.getAttribute("data-target-width")}%`;
+            });
+            view.querySelectorAll(".bar-chart-v-bar[data-target-height]").forEach((el) => {
+                el.style.height = `${el.getAttribute("data-target-height")}%`;
+            });
         });
-        document.querySelectorAll(".cockpit-stat[data-chart-target]").forEach((btn) => {
-            btn.setAttribute("aria-expanded", "false");
+    });
+}
+
+const cockpitTabs = document.querySelectorAll(".cockpit-tab[data-view-target]");
+const statusDots = document.querySelectorAll(".status-dot");
+
+function syncStatusDot(tab) {
+    const index = Array.from(cockpitTabs).indexOf(tab);
+    statusDots.forEach((dot, i) => dot.classList.toggle("is-active", i === index));
+}
+
+cockpitTabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+        if (tab.classList.contains("is-active")) return;
+
+        const targetView = document.getElementById(tab.getAttribute("data-view-target"));
+        if (!targetView) return;
+
+        document.querySelectorAll(".cockpit-view").forEach((view) => view.classList.remove("is-active"));
+        cockpitTabs.forEach((t) => {
+            t.classList.remove("is-active");
+            t.setAttribute("aria-pressed", "false");
         });
 
-        if (!wasOpen) {
-            target.hidden = false;
-            trigger.setAttribute("aria-expanded", "true");
-        }
+        targetView.classList.add("is-active");
+        tab.classList.add("is-active");
+        tab.setAttribute("aria-pressed", "true");
+        syncStatusDot(tab);
+
+        resetBars(targetView);
+        animateBars(targetView);
     });
 });
 
-document.querySelectorAll(".cockpit-chart-close").forEach((closeBtn) => {
-    closeBtn.addEventListener("click", () => {
-        const panel = closeBtn.closest(".cockpit-chart");
-        if (!panel) return;
-        panel.hidden = true;
-        const trigger = document.querySelector(`[data-chart-target="${panel.id}"]`);
-        if (trigger) trigger.setAttribute("aria-expanded", "false");
-    });
-});
+const initialCockpitView = document.querySelector(".cockpit-view.is-active");
+if (initialCockpitView) {
+    resetBars(initialCockpitView);
+    animateBars(initialCockpitView);
+}
