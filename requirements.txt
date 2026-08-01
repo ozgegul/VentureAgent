@@ -4,3 +4,5 @@ python-dotenv==1.0.1
 anthropic==0.34.2
 reportlab==4.5.1
 font-roboto==0.0.1
+Pillow==10.4.0
+requests==2.32.3

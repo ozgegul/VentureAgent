@@ -58,6 +58,15 @@ def init_db() -> None:
         )
         """
     )
+    # Migration: e-posta doğrulama ve profil fotoğrafı alanları sonradan eklendi.
+    if not _table_has_column(db, "users", "email_verified"):
+        db.execute("ALTER TABLE users ADD COLUMN email_verified INTEGER NOT NULL DEFAULT 0")
+    if not _table_has_column(db, "users", "verification_code"):
+        db.execute("ALTER TABLE users ADD COLUMN verification_code TEXT")
+    if not _table_has_column(db, "users", "verification_expires_at"):
+        db.execute("ALTER TABLE users ADD COLUMN verification_expires_at TEXT")
+    if not _table_has_column(db, "users", "avatar_path"):
+        db.execute("ALTER TABLE users ADD COLUMN avatar_path TEXT")
 
     db.execute(
         """
@@ -168,6 +177,41 @@ def set_user_active(user_id: int, is_active: bool) -> None:
     get_db().commit()
 
 
+def set_verification_code(user_id: int, code: str, expires_at: str) -> None:
+    """Store a fresh email-verification code + expiry for a user."""
+    get_db().execute(
+        "UPDATE users SET verification_code = ?, verification_expires_at = ? WHERE id = ?",
+        (code, expires_at, user_id),
+    )
+    get_db().commit()
+
+
+def mark_email_verified(user_id: int) -> None:
+    """Mark a user's email as verified and clear the used code."""
+    get_db().execute(
+        "UPDATE users SET email_verified = 1, verification_code = NULL, "
+        "verification_expires_at = NULL WHERE id = ?",
+        (user_id,),
+    )
+    get_db().commit()
+
+
+def update_user_password(user_id: int, password_hash: str) -> None:
+    """Update a user's password hash (used by the account panel)."""
+    get_db().execute(
+        "UPDATE users SET password_hash = ? WHERE id = ?", (password_hash, user_id)
+    )
+    get_db().commit()
+
+
+def update_user_avatar(user_id: int, avatar_path: str | None) -> None:
+    """Update a user's stored profile-photo path (relative to the static folder)."""
+    get_db().execute(
+        "UPDATE users SET avatar_path = ? WHERE id = ?", (avatar_path, user_id)
+    )
+    get_db().commit()
+
+
 # ---------------------------------------------------------------------------
 # Generic module results (SWOT, rakip, gelir, roadmap, yatırımcı, pitch, kanban)
 # ---------------------------------------------------------------------------
@@ -219,34 +263,6 @@ def list_module_results(user_id: int, module: str | None = None, limit: int = 50
     return [dict(row) for row in rows]
 
 
-def get_idea_analysis(analysis_id: int, user_id: int) -> dict[str, Any] | None:
-    row = get_db().execute(
-        "SELECT * FROM idea_analyses WHERE id = ? AND user_id = ?",
-        (analysis_id, user_id),
-    ).fetchone()
-    if row is None:
-        return None
-    analysis = dict(row)
-    analysis["recommendations"] = json.loads(analysis["recommendations"]) if analysis["recommendations"] else []
-    return analysis
-
-
-def list_idea_analyses(user_id: int, limit: int = 50) -> list[dict[str, Any]]:
-    rows = get_db().execute(
-        "SELECT * FROM idea_analyses WHERE user_id = ? ORDER BY created_at DESC, id DESC LIMIT ?",
-        (user_id, limit),
-    ).fetchall()
-    return [dict(row) for row in rows]
-
-
-def delete_idea_analysis(analysis_id: int, user_id: int) -> None:
-    get_db().execute(
-        "DELETE FROM idea_analyses WHERE id = ? AND user_id = ?",
-        (analysis_id, user_id),
-    )
-    get_db().commit()
-
-
 def get_module_result(result_id: int, user_id: int) -> dict[str, Any] | None:
     row = get_db().execute(
         "SELECT * FROM module_results WHERE id = ? AND user_id = ?",
@@ -266,18 +282,6 @@ def delete_module_result(result_id: int, user_id: int) -> None:
         (result_id, user_id),
     )
     get_db().commit()
-
-
-def get_dashboard_metrics(user_id: int) -> dict[str, Any]:
-    total_analyses = get_db().execute(
-        "SELECT COUNT(*) AS count FROM idea_analyses WHERE user_id = ?",
-        (user_id,),
-    ).fetchone()["count"]
-    total_modules = get_db().execute(
-        "SELECT COUNT(*) AS count FROM module_results WHERE user_id = ?",
-        (user_id,),
-    ).fetchone()["count"]
-    return {"total_analyses": total_analyses, "total_modules": total_modules}
 
 
 def save_idea_analysis(

@@ -1,14 +1,23 @@
-"""Kayıt, giriş ve çıkış rotaları."""
+"""Kayıt, giriş, çıkış ve e-posta doğrulama rotaları."""
 
 from __future__ import annotations
 
+import random
 import re
+from datetime import datetime, timedelta
 
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from backend.auth import current_user, login_required
-from backend.database import create_user, get_user_by_email, update_user_role
+from backend.database import (
+    create_user,
+    get_user_by_email,
+    mark_email_verified,
+    set_verification_code,
+    update_user_role,
+)
+from backend.services.mailer import EmailSendError, send_verification_email
 
 auth_bp = Blueprint("auth", __name__, template_folder="../../frontend/templates")
 
@@ -42,6 +51,27 @@ def validate_password(password: str) -> str | None:
     if not re.search(r"[0-9]", password):
         return "Şifre en az bir rakam içermelidir."
     return None
+
+
+VERIFICATION_CODE_TTL_MINUTES = 15
+
+
+def _issue_verification_code(user: dict) -> None:
+    """Generate a fresh 6-digit code, store it, and email it to the user.
+
+    E-posta gönderimi başarısız olursa (SMTP hatası) kod yine de DB'ye
+    kaydedilir — kullanıcı 'kodu yeniden gönder' ile tekrar deneyebilir;
+    akış tamamen tıkanmaz.
+    """
+    code = f"{random.randint(0, 999999):06d}"
+    expires_at = (datetime.utcnow() + timedelta(minutes=VERIFICATION_CODE_TTL_MINUTES)).isoformat()
+    set_verification_code(user["id"], code, expires_at)
+    try:
+        send_verification_email(to=user["email"], name=user["name"], code=code)
+    except EmailSendError:
+        # Kod DB'de duruyor; kullanıcı "yeniden gönder"i deneyebilir.
+        # Yerel geliştirmede mailer zaten kodu konsola basar (bkz. mailer.py).
+        pass
 
 
 @auth_bp.route("/register", methods=["GET", "POST"])
@@ -82,10 +112,10 @@ def register():
         password_hash=generate_password_hash(password),
         role="free",
     )
-    session.clear()
-    session["user_id"] = user_id
-    flash("Hesabınız oluşturuldu. Hoş geldiniz!", "success")
-    return redirect(url_for("main.index"))
+    user = get_user_by_email(email)
+    _issue_verification_code(user)
+    flash("Hesabın oluşturuldu. E-postana gönderdiğimiz kodu girerek doğrula.", "success")
+    return redirect(url_for("auth.verify", email=email))
 
 
 @auth_bp.route("/login", methods=["GET", "POST"])
@@ -110,6 +140,11 @@ def login():
     if error:
         return render_template("auth/login.html", error=error, email=email, next=next_url)
 
+    if not user["email_verified"]:
+        _issue_verification_code(user)
+        flash("Hesabını henüz doğrulamadın. E-postana yeni bir kod gönderdik.", "error")
+        return redirect(url_for("auth.verify", email=email))
+
     session.clear()
     session["user_id"] = user["id"]
     flash(f"Tekrar hoş geldin, {user['name']}!", "success")
@@ -121,6 +156,64 @@ def logout():
     session.clear()
     flash("Çıkış yapıldı.", "success")
     return redirect(url_for("main.index"))
+
+
+@auth_bp.route("/verify", methods=["GET", "POST"])
+def verify():
+    """E-posta doğrulama kodu giriş sayfası."""
+    if current_user():
+        return redirect(url_for("main.index"))
+
+    email = request.values.get("email", "").strip().lower()
+    user = get_user_by_email(email) if email else None
+
+    if user is None:
+        flash("Doğrulanacak bir hesap bulunamadı.", "error")
+        return redirect(url_for("auth.register"))
+
+    if user["email_verified"]:
+        flash("Bu hesap zaten doğrulanmış. Giriş yapabilirsin.", "success")
+        return redirect(url_for("auth.login"))
+
+    if request.method == "GET":
+        return render_template("auth/verify.html", email=email)
+
+    code = request.form.get("code", "").strip()
+    error = None
+
+    if not user["verification_code"] or not user["verification_expires_at"]:
+        error = "Kod bulunamadı. Lütfen yeni bir kod iste."
+    elif datetime.utcnow() > datetime.fromisoformat(user["verification_expires_at"]):
+        error = "Kodun süresi dolmuş. Lütfen yeni bir kod iste."
+    elif code != user["verification_code"]:
+        error = "Girdiğin kod hatalı."
+
+    if error:
+        return render_template("auth/verify.html", email=email, error=error)
+
+    mark_email_verified(user["id"])
+    session.clear()
+    session["user_id"] = user["id"]
+    flash("E-postan doğrulandı! Hoş geldin. 🎉", "success")
+    return redirect(url_for("main.index"))
+
+
+@auth_bp.route("/verify/resend", methods=["POST"])
+def resend_verification():
+    """Doğrulama kodunu yeniden gönderir."""
+    email = request.form.get("email", "").strip().lower()
+    user = get_user_by_email(email) if email else None
+
+    if user is None:
+        flash("Hesap bulunamadı.", "error")
+        return redirect(url_for("auth.register"))
+
+    if user["email_verified"]:
+        return redirect(url_for("auth.login"))
+
+    _issue_verification_code(user)
+    flash("Yeni kod e-postana gönderildi.", "success")
+    return redirect(url_for("auth.verify", email=email))
 
 
 @auth_bp.route("/upgrade", methods=["GET"])

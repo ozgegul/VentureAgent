@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}E-posta Doğrulama — VentureAgent{% endblock %}
+
+{% block content %}
+    <div class="auth-shell">
+        <h1>E-postanı Doğrula</h1>
+        <p class="subtitle">
+            <strong>{{ email }}</strong> adresine 6 haneli bir kod gönderdik.
+            Kodu aşağıya girip hesabını doğrula.
+        </p>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('auth.verify') }}" class="form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="email" value="{{ email }}">
+
+            <label for="code">Doğrulama Kodu</label>
+            <input
+                type="text"
+                id="code"
+                name="code"
+                inputmode="numeric"
+                pattern="[0-9]{6}"
+                maxlength="6"
+                placeholder="000000"
+                autocomplete="one-time-code"
+                required
+                autofocus
+            >
+            <span class="field-hint">Kod 15 dakika boyunca geçerlidir.</span>
+
+            <button type="submit">Doğrula</button>
+        </form>
+
+        <form method="POST" action="{{ url_for('auth.resend_verification') }}" class="auth-switch">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="email" value="{{ email }}">
+            Kod gelmedi mi?
+            <button type="submit" class="link-button">Yeniden gönder</button>
+        </form>
+    </div>
+{% endblock %}
