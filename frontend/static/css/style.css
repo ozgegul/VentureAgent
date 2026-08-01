@@ -127,7 +127,6 @@ code {
 }
 .brand-logo { height: 28px; width: auto; display: block; }
 [data-theme="dark"] .brand-logo { filter: invert(1); }
-.brand::after { content: " / cockpit"; color: var(--coral); font-family: var(--font-body); font-size: 0.75rem; font-weight: 700; }
 .brand:hover { color: var(--teal-dark); }
 
 .nav-links { display: flex; flex-wrap: wrap; gap: 0.3rem; align-items: center; min-width: 0; }
@@ -296,8 +295,6 @@ code {
     position: relative;
 }
 
-.hero-logo { height: 64px; width: auto; display: block; margin-bottom: 1.4rem; }
-[data-theme="dark"] .hero-logo { filter: invert(1); }
 
 .eyebrow {
     display: inline-flex;
@@ -1087,7 +1084,6 @@ code {
     .navbar { padding: 0.9rem 1rem; flex-wrap: wrap; row-gap: 0.6rem; }
     .navbar-top { flex-wrap: wrap; gap: 0.5rem 0.8rem; }
     .brand { font-size: 1.02rem; }
-    .brand::after { display: none; }
     .nav-account { gap: 0.35rem; }
     .user-pill { padding: 0.3rem 0.5rem; font-size: 0.72rem; }
     .user-pill .pro-badge { display: none; }
