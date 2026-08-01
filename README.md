@@ -297,11 +297,18 @@ Bu sprintte paralel yürütülen kollar:
 <details>
 <summary>Daily Scrum Notları</summary>
 
-**[Tarih]** — [O gün ne konuşuldu / ne yapıldı — Slack özetini buraya ekleyin]
+<img width="1463" height="1009" alt="Ekran görüntüsü 2026-08-01 150716" src="https://github.com/user-attachments/assets/9b63973a-da8f-428a-a165-ffd3051e20ad" />
+<img width="1461" height="1035" alt="Ekran görüntüsü 2026-08-01 150707" src="https://github.com/user-attachments/assets/8094847d-b1d5-4d90-8cda-2630aa6d831a" />
+<img width="1454" height="928" alt="Ekran görüntüsü 2026-08-01 150659" src="https://github.com/user-attachments/assets/ecf8c404-ece1-4794-8719-f23a9874f6a0" />
+<img width="1459" height="886" alt="Ekran görüntüsü 2026-08-01 150651" src="https://github.com/user-attachments/assets/f7c342c2-bd55-4afd-8961-965299445bdd" />
+<img width="1465" height="1094" alt="Ekran görüntüsü 2026-08-01 150830" src="https://github.com/user-attachments/assets/01de560c-4187-4799-ac7d-0b0edb3b9292" />
+<img width="1461" height="1113" alt="Ekran görüntüsü 2026-08-01 150820" src="https://github.com/user-attachments/assets/61ea9a21-0f13-4621-aa72-530c09081928" />
+<img width="1460" height="1104" alt="Ekran görüntüsü 2026-08-01 150811" src="https://github.com/user-attachments/assets/3be0e54e-826b-4bb8-922c-715cbe3815d9" />
+<img width="1453" height="999" alt="Ekran görüntüsü 2026-08-01 150801" src="https://github.com/user-attachments/assets/90b9210a-f80a-41d3-b126-c7a13cda8df2" />
+<img width="1460" height="1057" alt="Ekran görüntüsü 2026-08-01 150753" src="https://github.com/user-attachments/assets/30efd98c-00a1-444f-bf2a-f4d503603b3e" />
+<img width="1465" height="1037" alt="Ekran görüntüsü 2026-08-01 150742" src="https://github.com/user-attachments/assets/c27de95b-5a01-4a7e-871c-816d7ce26de8" />
+<img width="1462" height="991" alt="Ekran görüntüsü 2026-08-01 150731" src="https://github.com/user-attachments/assets/3279ce47-fbeb-4c1c-ac87-83f5e469ab71" />
 
-**[Tarih]** — [...]
-
-[Buraya Slack ekran görüntülerini ekleyin]
 
 </details>
 
@@ -314,26 +321,34 @@ Bu sprintte paralel yürütülen kollar:
 ## Sprint Board Update
 User story'ler Kanban board'a eklenmiştir. Her user story'nin task'ları kartın içindeki detayda (checklist) yer almaktadır. Sprint boyunca kartlar Yapılacak → Devam Ediyor → Tamamlandı sütunları arasında ilerletilmiştir.
 
-[Buraya Notion Sprint 3 board ekran görüntüsünü ekleyin]
+<img width="1576" height="1026" alt="Ekran görüntüsü 2026-08-01 150235" src="https://github.com/user-attachments/assets/4cc6b952-ce0a-4b92-b8c7-4344d487b200" />
+<img width="1578" height="1016" alt="Ekran görüntüsü 2026-08-01 150220" src="https://github.com/user-attachments/assets/4351ba1a-762f-4854-bb28-ced6ffd7014e" />
+<img width="1533" height="1007" alt="Ekran görüntüsü 2026-08-01 150249" src="https://github.com/user-attachments/assets/69ab6613-9799-4342-ba0a-5823248f85bd" />
+
 
 ## Product Status
 - [Sprint sonunda] kullanıcılar kayıt olup giriş yapabilmekte ve kendi analizlerini görebilmektedir.
 - Rol tabanlı erişim (RBAC) ile admin paneli yalnızca yetkili kullanıcılara açılmaktadır.
 - Arayüze karanlık mod ve birleşik analiz çıktı şablonu eklenmiştir.
-- [Tamamlanan diğer maddeleri buraya yazın]
+- 
 
-[Buraya uygulamadan ekran görüntüleri ekleyin]
+<img width="1879" height="926" alt="image" src="https://github.com/user-attachments/assets/27e68d86-fd80-413f-bc03-c17373e8130a" />
+<img width="1889" height="962" alt="image" src="https://github.com/user-attachments/assets/27c15b36-094c-48f6-8bf3-8ad51732eccf" />
+<img width="1891" height="967" alt="image" src="https://github.com/user-attachments/assets/a46d4a0f-7aec-46c2-a3f5-f10fe5e07545" />
+<img width="1904" height="1003" alt="image" src="https://github.com/user-attachments/assets/303c595c-9c91-4f95-8fe3-b94940b1fe7b" />
+
+
 
 ## Sprint Review
-- Bu sprintte tamamlanan: [ör. Kullanıcı kaydı ve girişi, e-posta doğrulama, rol tabanlı erişim (RBAC), kullanıcı hesap paneli, karanlık mod, birleşik analiz şablonu, ana sayfa istatistikleri, agent yanıt kalitesi geliştirmesi].
-- Alınan kararlar: [ör. Mevcut SQLite veritabanına yeni bir kullanıcı tablosu eklenerek çok kullanıcılı yapıya geçilmesi].
-- Sonraki sprint hedefi: [ör. Kanban kartlarının kalıcı saklanması, sohbete ses/görsel ekleme, rakip analizine web arama entegrasyonu, Pro ödeme entegrasyonu].
+- Bu sprintte tamamlanan: [ Kullanıcı kaydı ve girişi, e-posta doğrulama, rol tabanlı erişim (RBAC), kullanıcı hesap paneli, karanlık mod, birleşik analiz şablonu, ana sayfa istatistikleri, agent yanıt kalitesi geliştirmesi].
+- Alınan kararlar: .
+- Sonraki sprint hedefi: .
 
 ## Sprint Retrospective
-- İyi giden: [ör. Kullanıcı sistemi altyapısının planlandığı gibi kurulması].
-- Neleri iyi yaptık: [ör. Mevcut veritabanını sıfırdan kurmadan genişletmek, işleri kişilere net dağıtmak].
-- Neleri geliştirebiliriz: [ör. Test kapsamı, görev dağılımının dengesi].
-- Planlanan aksiyonlar: [Sonraki sprint için].
+- İyi giden:.
+- Neleri iyi yaptık: .
+- Neleri geliştirebiliriz:.
+- Planlanan aksiyonlar: .
 
 ---
 Sprint 3 için Backlog dağıtım mantığı: 
