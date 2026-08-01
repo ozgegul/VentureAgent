@@ -278,7 +278,68 @@ Bu sprinte başlarken ana hedefimiz web sitemizin temellerini atarak kullanıcı
 
 ---
 
-# Sprint 3
+<details>
+<summary><h2>Sprint 3<h2></summary>
+
+## Sprint Notes
+- Sprint süresi: [20/07/2026] – [02/08/2026]
+- Bu sprintte kullanıcı sistemi (kayıt, giriş, roller), yanıt kalitesinin iyileştirilmesi, sohbete eklenti ekleme ve hesap paneli üzerine odaklanılmıştır.
+- Ana hedef: Uygulamayı çok kullanıcılı hale getirmek, kullanıcıya özel veri ve yetkilendirme altyapısını (RBAC) kurmak, agent yanıt kalitesini artırmak ve arayüz iyileştirmeleri (eklenti eklemek, birleşik analiz şablonu) eklemek ve çıktı kalitesini görsel olarak iyileştirmek.
+
+## Daily Scrum
+Ekip yüz yüze bir araya gelemediği için daily scrumlar [slack] üzerinden asenkron olarak mesaj veya huddle ile yürütülmüştür. Daily scrum'lar ekran görüntüsü + kısa metin özetiyle tutulmuştur.
+
+Bu sprintte paralel yürütülen kollar:
+- Kullanıcı sistemi (kayıt/giriş, e-posta doğrulama, roller, hesap paneli)
+- Arayüz iyileştirmeleri (karanlık mod, birleşik analiz çıktı şablonu, ana sayfa istatistikleri)
+- Agent geliştirmesi ve sunum/görsel üretimi, çıktı kalitesinin iyileştirmek
+
+<details>
+<summary>Daily Scrum Notları</summary>
+
+**[Tarih]** — [O gün ne konuşuldu / ne yapıldı — Slack özetini buraya ekleyin]
+
+**[Tarih]** — [...]
+
+[Buraya Slack ekran görüntülerini ekleyin]
+
+</details>
+
+## Katkı Özeti
+- **Ayşenur (Scrum Master):** Sprint planlama, mentör iletişimi, Notion backlog (user story & task) düzenlemesi, README güncellemeleri; birleşik analiz çıktı şablonu ve ana sayfa istatistikleri ve SWOT analizi çıktısının görsel olarak iyileştirilmesi.
+- **Özge (Product Owner):** Ürün yönü ve önceliklendirme; kullanıcı hesap paneli (şifre değiştirme, profil fotoğrafı, geçmiş), e-posta ile kayıt doğrulama (confirmation code).
+- **Hakkı:** .
+- **Haticenur:** Sunum için görsel üretimi, skor hesaplama gözden geçirmesi, sayfalarda bulunan hatanın giderilmesi.
+
+## Sprint Board Update
+User story'ler Kanban board'a eklenmiştir. Her user story'nin task'ları kartın içindeki detayda (checklist) yer almaktadır. Sprint boyunca kartlar Yapılacak → Devam Ediyor → Tamamlandı sütunları arasında ilerletilmiştir.
+
+[Buraya Notion Sprint 3 board ekran görüntüsünü ekleyin]
+
+## Product Status
+- [Sprint sonunda] kullanıcılar kayıt olup giriş yapabilmekte ve kendi analizlerini görebilmektedir.
+- Rol tabanlı erişim (RBAC) ile admin paneli yalnızca yetkili kullanıcılara açılmaktadır.
+- Arayüze karanlık mod ve birleşik analiz çıktı şablonu eklenmiştir.
+- [Tamamlanan diğer maddeleri buraya yazın]
+
+[Buraya uygulamadan ekran görüntüleri ekleyin]
+
+## Sprint Review
+- Bu sprintte tamamlanan: [ör. Kullanıcı kaydı ve girişi, e-posta doğrulama, rol tabanlı erişim (RBAC), kullanıcı hesap paneli, karanlık mod, birleşik analiz şablonu, ana sayfa istatistikleri, agent yanıt kalitesi geliştirmesi].
+- Alınan kararlar: [ör. Mevcut SQLite veritabanına yeni bir kullanıcı tablosu eklenerek çok kullanıcılı yapıya geçilmesi].
+- Sonraki sprint hedefi: [ör. Kanban kartlarının kalıcı saklanması, sohbete ses/görsel ekleme, rakip analizine web arama entegrasyonu, Pro ödeme entegrasyonu].
+
+## Sprint Retrospective
+- İyi giden: [ör. Kullanıcı sistemi altyapısının planlandığı gibi kurulması].
+- Neleri iyi yaptık: [ör. Mevcut veritabanını sıfırdan kurmadan genişletmek, işleri kişilere net dağıtmak].
+- Neleri geliştirebiliriz: [ör. Test kapsamı, görev dağılımının dengesi].
+- Planlanan aksiyonlar: [Sonraki sprint için].
+
+---
+Sprint 3 için Backlog dağıtım mantığı: 
+Rol dağılımı yaparken kişilerin mevcut bilgilerine, gönüllülük esasına ve projeye ayırabileceği zamana göre dağıtmaya dikkat ettik. Bu sprintte önceliğimiz kullanıcı sistemi ve yetkilendirme altyapısını kurmak olduğundan, task dağıtımı bu önceliğe göre yapılmıştır.
+
+</details>
 
 
 ---
