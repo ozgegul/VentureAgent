@@ -56,6 +56,7 @@ def create_app():
     from backend.routes.kanban import kanban_bp
     from backend.routes.investors import investors_bp
     from backend.routes.pitch import pitch_bp
+    from backend.routes.export import export_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(ai_test_bp, url_prefix="/ai-test")
@@ -73,5 +74,6 @@ def create_app():
     app.register_blueprint(kanban_bp, url_prefix="/kanban")
     app.register_blueprint(investors_bp, url_prefix="/investors")
     app.register_blueprint(pitch_bp, url_prefix="/pitch")
+    app.register_blueprint(export_bp, url_prefix="/export")
 
     return app

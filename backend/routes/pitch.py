@@ -49,7 +49,8 @@ def generate_pitch():
                 input_data={"traction": traction},
                 result_data={"slides": slides},
             )
-            return render_template("pitch.html", elevator=None, slides=slides, active_idea=get_active_idea())
+            return render_template("pitch.html", elevator=None, slides=slides, active_idea=get_active_idea(), submitted_idea=idea)
+
         else:
             user_prompt = f"Fikir: {idea}"
             elevator = ask_ai(

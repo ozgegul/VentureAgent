@@ -6,3 +6,4 @@ reportlab==4.5.1
 font-roboto==0.0.1
 Pillow==10.4.0
 requests==2.32.3
+python-pptx==1.0.2

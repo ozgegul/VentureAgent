@@ -96,7 +96,16 @@
     {% if analysis %}
         <div class="result">
             <h2>Analiz Sonucu</h2>
-            <pre>{{ analysis }}</pre>
+            <div id="analysis-content" class="md-output"></div>
         </div>
     {% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if analysis %}
+<script>
+    document.getElementById('analysis-content').innerHTML =
+        marked.parse({{ analysis | tojson }});
+</script>
+{% endif %}
 {% endblock %}

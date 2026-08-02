@@ -29,7 +29,7 @@
     {% if elevator %}
         <div class="result">
             <h2>Asansör Konuşman</h2>
-            <p>{{ elevator }}</p>
+            <div id="elevator-content" class="md-output"></div>
         </div>
     {% endif %}
 
@@ -47,6 +47,25 @@
                     </li>
                 {% endfor %}
             </ul>
+
+            {# ── PPTX Export ─────────────────────────────────────────────── #}
+            <form method="POST" action="{{ url_for('export.pitch_pptx') }}" style="margin-top:20px;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="idea" value="{{ submitted_idea if submitted_idea else (active_idea.idea if active_idea else '') }}">
+                <input type="hidden" name="slides_json" value="{{ slides | tojson | forceescape }}">
+                <button type="submit" class="btn-secondary">
+                    ⬇ Sunumu İndir (.pptx)
+                </button>
+            </form>
         </div>
     {% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if elevator %}
+<script>
+    document.getElementById('elevator-content').innerHTML =
+        marked.parse({{ elevator | tojson }});
+</script>
+{% endif %}
 {% endblock %}

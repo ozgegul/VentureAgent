@@ -17,8 +17,12 @@ let audioChunks = [];
 
 function appendBubble(role, content) {
     const bubble = document.createElement("div");
-    bubble.className = `chat-bubble chat-${role}`;
-    bubble.textContent = content;
+    bubble.className = `chat-bubble chat-${role} md-output`;
+    if (role === "assistant" && typeof marked !== "undefined") {
+        bubble.innerHTML = marked.parse(content);
+    } else {
+        bubble.textContent = content;
+    }
     messagesEl.appendChild(bubble);
     messagesEl.scrollTop = messagesEl.scrollHeight;
     return bubble;
@@ -56,7 +60,11 @@ async function sendMessage() {
         if (data.error) {
             thinkingBubble.textContent = `Hata: ${data.error}`;
         } else {
-            thinkingBubble.textContent = data.reply;
+            if (typeof marked !== "undefined") {
+                thinkingBubble.innerHTML = marked.parse(data.reply);
+            } else {
+                thinkingBubble.textContent = data.reply;
+            }
             if (data.suggested_route && data.suggested_route !== "none") {
                 const routeUrls = {
                     "swot": "/swot",
@@ -201,3 +209,12 @@ if(micBtn) {
         }
     });
 }
+
+// Re-render existing history bubbles (server-side rendered) with markdown
+document.querySelectorAll(".chat-assistant").forEach(function(bubble) {
+    if (typeof marked !== "undefined" && bubble.dataset.mdRendered !== "1") {
+        bubble.classList.add("md-output");
+        bubble.innerHTML = marked.parse(bubble.textContent || "");
+        bubble.dataset.mdRendered = "1";
+    }
+});

@@ -1039,6 +1039,25 @@ code {
 .result { padding: 1.35rem; }
 .result h2 { color: var(--teal-dark); font-family: var(--font-body); font-size: 0.86rem; text-transform: uppercase; letter-spacing: 0.08em; }
 .result pre { white-space: pre-wrap; font-family: inherit; margin: 0; }
+
+/* ── Markdown rendered output ─────────────────────────────────────────── */
+.md-output { line-height: 1.75; color: var(--text); }
+.md-output h1,
+.md-output h2,
+.md-output h3 { font-family: var(--font-heading); color: var(--teal-dark); margin: 1.4rem 0 0.4rem; }
+.md-output h1 { font-size: 1.25rem; }
+.md-output h2 { font-size: 1.1rem; }
+.md-output h3 { font-size: 0.97rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.md-output p  { margin: 0.55rem 0; }
+.md-output ul,
+.md-output ol { padding-left: 1.4rem; margin: 0.5rem 0; }
+.md-output li { margin: 0.3rem 0; }
+.md-output strong { font-weight: 600; color: var(--text); }
+.md-output em { color: var(--text-muted); font-style: italic; }
+.md-output hr { border: none; border-top: 1px solid var(--line); margin: 1.2rem 0; }
+.md-output code { background: var(--surface-strong); border-radius: 4px; padding: 1px 5px; font-size: 0.88em; }
+.md-output blockquote { border-left: 3px solid var(--teal); margin: 0.8rem 0; padding: 0.4rem 1rem; color: var(--text-muted); font-style: italic; }
+
 .error { color: var(--danger); background: rgba(239, 106, 77, 0.1); border: 1px solid rgba(239, 106, 77, 0.28); padding: 0.75rem 1rem; border-radius: var(--radius); }
 
 .swot-actions { display: flex; justify-content: flex-end; margin-top: 1.3rem; }

@@ -45,7 +45,7 @@ def advise_investors():
             task_complexity="medium",
         )
     except Exception as exc:  # noqa: BLE001
-        return render_template("investors.html", advice=None, error=str(exc), active_idea=get_active_idea())
+        return render_template("investors.html", advice=None, error=str(exc), active_idea=get_active_idea(), idea=idea)
 
     append_analysis("investors", {"advice": advice})
     save_module_result(
@@ -55,4 +55,4 @@ def advise_investors():
         input_data={"stage": stage, "amount": amount, "geography": geography},
         result_data={"advice": advice},
     )
-    return render_template("investors.html", advice=advice, active_idea=get_active_idea())
+    return render_template("investors.html", advice=advice, active_idea=get_active_idea(), idea=idea)

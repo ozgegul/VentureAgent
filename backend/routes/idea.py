@@ -81,7 +81,7 @@ Bu fikri şu başlıklarla değerlendir:
         analysis = ask_ai(
             user_prompt=user_prompt,
             system_prompt=SYSTEM_PROMPT,
-            max_tokens=1200,
+            max_tokens=3000,
             module="idea",
             task_complexity="medium",
         )

@@ -34,7 +34,27 @@
 
     {% if advice %}
         <div class="result">
-            <pre>{{ advice }}</pre>
+            <div id="advice-content" class="md-output"></div>
+
+            {# ── PPTX Export ─────────────────────────────────────────────── #}
+            <form method="POST" action="{{ url_for('export.investors_pptx') }}" style="margin-top:20px;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="idea" value="{{ idea or '' }}">
+                <input type="hidden" name="stage" value="{{ request.form.get('stage', '') }}">
+                <input type="hidden" name="advice" value="{{ advice | forceescape }}">
+                <button type="submit" class="btn-secondary">
+                    ⬇ Raporu İndir (.pptx)
+                </button>
+            </form>
         </div>
     {% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if advice %}
+<script>
+    document.getElementById('advice-content').innerHTML =
+        marked.parse({{ advice | tojson }});
+</script>
+{% endif %}
 {% endblock %}

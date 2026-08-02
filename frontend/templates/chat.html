@@ -14,7 +14,7 @@
 <div id="chat-window">
     <div id="chat-messages">
         {% for msg in history %}
-        <div class="chat-bubble chat-{{ msg.role }}">{{ msg.content }}</div>
+        <div class="chat-bubble chat-{{ msg.role }}{% if msg.role == 'assistant' %} md-output{% endif %}">{{ msg.content }}</div>
         {% endfor %}
     </div>
 
