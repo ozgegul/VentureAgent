@@ -362,23 +362,38 @@ Rol dağılımı yaparken kişilerin mevcut bilgilerine, gönüllülük esasına
 
 ---
 
-##Kullanılan Teknolojiler
+## Kullanılan Teknolojiler
 
 Python
+
 Flask
+
 Flask-WTF
+
 python-dotenv
+
 SQLite
+
 Google Gemini API
+
 Anthropic Claude API
+
 ReportLab
+
 python-pptx
+
 Pillow
+
 requests
+
 Resend / SMTP
+
 HTML
+
 CSS
+
 JavaScript
+
 Jinja2
 
 ❗️ Bu proje Yapay Zeka ve Teknoloji Akademisi bootcamp süreci için oluşturulmuştur. 
