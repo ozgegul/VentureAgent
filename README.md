@@ -321,6 +321,7 @@ Bu sprintte paralel yürütülen kollar:
 ## Sprint Board Update
 User story'ler Kanban board'a eklenmiştir. Her user story'nin task'ları kartın içindeki detayda (checklist) yer almaktadır. Sprint boyunca kartlar Yapılacak → Devam Ediyor → Tamamlandı sütunları arasında ilerletilmiştir.
 
+
 <img width="1578" height="1016" alt="Ekran görüntüsü 2026-08-01 150220" src="https://github.com/user-attachments/assets/4351ba1a-762f-4854-bb28-ced6ffd7014e" />
 <img width="1576" height="1026" alt="Ekran görüntüsü 2026-08-01 150235" src="https://github.com/user-attachments/assets/4cc6b952-ce0a-4b92-b8c7-4344d487b200" />
 <img width="1533" height="1007" alt="Ekran görüntüsü 2026-08-01 150249" src="https://github.com/user-attachments/assets/69ab6613-9799-4342-ba0a-5823248f85bd" />
@@ -360,5 +361,24 @@ Rol dağılımı yaparken kişilerin mevcut bilgilerine, gönüllülük esasına
 
 
 ---
+
+##Kullanılan Teknolojiler
+
+Python
+Flask
+Flask-WTF
+python-dotenv
+SQLite
+Google Gemini API
+Anthropic Claude API
+ReportLab
+python-pptx
+Pillow
+requests
+Resend / SMTP
+HTML
+CSS
+JavaScript
+Jinja2
 
 ❗️ Bu proje Yapay Zeka ve Teknoloji Akademisi bootcamp süreci için oluşturulmuştur. 
