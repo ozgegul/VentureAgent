@@ -321,11 +321,18 @@ Bu sprintte paralel yürütülen kollar:
 ## Sprint Board Update
 User story'ler Kanban board'a eklenmiştir. Her user story'nin task'ları kartın içindeki detayda (checklist) yer almaktadır. Sprint boyunca kartlar Yapılacak → Devam Ediyor → Tamamlandı sütunları arasında ilerletilmiştir. Planlanan tüm User story ve tasklar tamamlanmıştır
 
+<details>
+<summary>Sprint Board </summary>
 
 <img width="1578" height="1016" alt="Ekran görüntüsü 2026-08-01 150220" src="https://github.com/user-attachments/assets/4351ba1a-762f-4854-bb28-ced6ffd7014e" />
 <img width="1576" height="1026" alt="Ekran görüntüsü 2026-08-01 150235" src="https://github.com/user-attachments/assets/4cc6b952-ce0a-4b92-b8c7-4344d487b200" />
 <img width="1533" height="1007" alt="Ekran görüntüsü 2026-08-01 150249" src="https://github.com/user-attachments/assets/69ab6613-9799-4342-ba0a-5823248f85bd" />
+<img width="803" height="1019" alt="image" src="https://github.com/user-attachments/assets/7e573f85-18e9-4000-ac35-a025771eaea5" />
+<img width="804" height="569" alt="image" src="https://github.com/user-attachments/assets/1aeeae6a-5540-4539-8772-9570224d7be4" />
+<img width="764" height="1011" alt="image" src="https://github.com/user-attachments/assets/d4f5210b-cb9d-4335-ae90-57cd9b3f33bc" />
+<img width="756" height="593" alt="image" src="https://github.com/user-attachments/assets/6c00c672-90f8-45ab-90ab-699936548374" />
 
+</details>
 
 ## Product Status
 - [Sprint sonunda] kullanıcılar kayıt olup giriş yapabilmekte ve kendi analizlerini görebilmektedir.
@@ -333,11 +340,15 @@ User story'ler Kanban board'a eklenmiştir. Her user story'nin task'ları kartı
 - Arayüze karanlık mod ve birleşik analiz çıktı şablonu eklenmiştir.
 - Şu an web sitemiz kullanıma hazırdır. Kişiler kayıt olarak hem sohbet ederek çıktılarını elde edebilir hem de geçmiş kayıtlarını görebilir.
 
+<details>
+<summary>Product SS </summary>
+
 <img width="1879" height="926" alt="image" src="https://github.com/user-attachments/assets/27e68d86-fd80-413f-bc03-c17373e8130a" />
 <img width="1889" height="962" alt="image" src="https://github.com/user-attachments/assets/27c15b36-094c-48f6-8bf3-8ad51732eccf" />
 <img width="1891" height="967" alt="image" src="https://github.com/user-attachments/assets/a46d4a0f-7aec-46c2-a3f5-f10fe5e07545" />
 <img width="1904" height="1003" alt="image" src="https://github.com/user-attachments/assets/303c595c-9c91-4f95-8fe3-b94940b1fe7b" />
 
+</details>
 
 
 ## Sprint Review
