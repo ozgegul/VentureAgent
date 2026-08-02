@@ -319,7 +319,7 @@ Bu sprintte paralel yürütülen kollar:
 - **Haticenur:** Sunum için görsel üretimi, skor hesaplama gözden geçirmesi, sayfalarda bulunan hatanın giderilmesi.
 
 ## Sprint Board Update
-User story'ler Kanban board'a eklenmiştir. Her user story'nin task'ları kartın içindeki detayda (checklist) yer almaktadır. Sprint boyunca kartlar Yapılacak → Devam Ediyor → Tamamlandı sütunları arasında ilerletilmiştir.
+User story'ler Kanban board'a eklenmiştir. Her user story'nin task'ları kartın içindeki detayda (checklist) yer almaktadır. Sprint boyunca kartlar Yapılacak → Devam Ediyor → Tamamlandı sütunları arasında ilerletilmiştir. Planlanan tüm User story ve tasklar tamamlanmıştır
 
 
 <img width="1578" height="1016" alt="Ekran görüntüsü 2026-08-01 150220" src="https://github.com/user-attachments/assets/4351ba1a-762f-4854-bb28-ced6ffd7014e" />
