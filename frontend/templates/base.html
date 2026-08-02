@@ -53,11 +53,14 @@
                 <span class="theme-toggle-icon"></span>
             </button>
             {% if g.user %}
-                <span class="user-pill">
+                <a href="{{ url_for('account.account_page') }}" class="user-pill" title="Hesabım">
+                    {% if g.user.avatar_path %}
+                        <img src="{{ url_for('static', filename=g.user.avatar_path) }}" alt="" class="nav-avatar">
+                    {% endif %}
                     {{ g.user.name }}
                     {% if g.user.role == 'pro' %}<span class="pro-badge">PRO</span>{% endif %}
                     {% if g.user.role == 'admin' %}<span class="pro-badge admin-badge">ADMIN</span>{% endif %}
-                </span>
+                </a>
                 <form method="POST" action="{{ url_for('auth.logout') }}" class="inline-form">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button type="submit" class="secondary-button small">Çıkış</button>

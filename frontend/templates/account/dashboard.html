@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Hesabım — VentureAgent{% endblock %}
+
+{% block content %}
+    <span class="eyebrow">Hesap Paneli</span>
+    <h1>Hesabım</h1>
+    <p class="subtitle">Profilini, şifreni ve geçmiş analizlerini buradan yönet.</p>
+
+    <div class="account-grid">
+        <section class="account-panel">
+            <h2>Profil Fotoğrafı</h2>
+            <div class="avatar-row">
+                {% if g.user.avatar_path %}
+                    <img src="{{ url_for('static', filename=g.user.avatar_path) }}" alt="Profil fotoğrafı" class="avatar-preview">
+                {% else %}
+                    <div class="avatar-placeholder">{{ g.user.name[:1]|upper }}</div>
+                {% endif %}
+                <div class="avatar-actions">
+                    <form method="POST" action="{{ url_for('account.upload_avatar') }}" enctype="multipart/form-data" class="inline-form">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <label for="avatar" class="secondary-button small avatar-upload-label">Fotoğraf Yükle</label>
+                        <input type="file" id="avatar" name="avatar" accept="image/png,image/jpeg,image/webp" class="avatar-input" onchange="this.form.submit()">
+                    </form>
+                    {% if g.user.avatar_path %}
+                        <form method="POST" action="{{ url_for('account.delete_avatar') }}" class="inline-form">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="link-danger">Kaldır</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+            <span class="field-hint">JPG, PNG veya WEBP — en fazla 3MB.</span>
+        </section>
+
+        <section class="account-panel">
+            <h2>Profil Bilgisi</h2>
+            <dl class="account-info">
+                <dt>Ad Soyad</dt>
+                <dd>{{ g.user.name }}</dd>
+                <dt>E-posta</dt>
+                <dd>{{ g.user.email }}</dd>
+                <dt>Hesap Türü</dt>
+                <dd>
+                    {% if g.user.role == 'admin' %}<span class="pro-badge admin-badge">ADMIN</span>
+                    {% elif g.user.role == 'pro' %}<span class="pro-badge">PRO</span>
+                    {% else %}Free
+                        <a href="{{ url_for('auth.upgrade_page') }}" class="upgrade-inline-link">Pro'ya geç →</a>
+                    {% endif %}
+                </dd>
+                <dt>Üyelik Tarihi</dt>
+                <dd>{{ g.user.created_at }}</dd>
+            </dl>
+        </section>
+
+        <section class="account-panel">
+            <h2>Şifre Değiştir</h2>
+            <form method="POST" action="{{ url_for('account.change_password') }}" class="form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <label for="current_password">Mevcut Şifre</label>
+                <input type="password" id="current_password" name="current_password" required>
+
+                <label for="new_password">Yeni Şifre</label>
+                <input type="password" id="new_password" name="new_password" minlength="8" required>
+                <span class="field-hint">En az 8 karakter, en az bir harf ve bir rakam içermeli.</span>
+
+                <label for="new_password_confirm">Yeni Şifre (Tekrar)</label>
+                <input type="password" id="new_password_confirm" name="new_password_confirm" minlength="8" required>
+
+                <button type="submit">Şifreyi Güncelle</button>
+            </form>
+        </section>
+
+        <section class="account-panel account-panel-wide">
+            <h2>Son Aktivite</h2>
+
+            {% if recent_analyses or recent_modules %}
+                <div class="history-table-wrap compact-table">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Tür</th>
+                                <th>Fikir</th>
+                                <th>Tarih</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in recent_analyses %}
+                                <tr>
+                                    <td>Fikir Analizi</td>
+                                    <td>{{ item.idea }}</td>
+                                    <td>{{ item.created_at }}</td>
+                                    <td><a href="{{ url_for('history.history_detail', analysis_id=item.id) }}">Detay</a></td>
+                                </tr>
+                            {% endfor %}
+                            {% for item in recent_modules %}
+                                <tr>
+                                    <td>{{ item.label }}</td>
+                                    <td>{{ item.idea }}</td>
+                                    <td>{{ item.created_at }}</td>
+                                    <td><a href="{{ url_for('history.module_result_detail', result_id=item.id) }}">Detay</a></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{{ url_for('history.history_page') }}" class="secondary-button small account-history-link">Tüm geçmişi gör →</a>
+            {% else %}
+                <div class="empty-state">
+                    <h2>Henüz aktivite yok</h2>
+                    <p>Bir fikir analiz ettiğinde burada görünecek.</p>
+                    <a href="{{ url_for('idea.idea_form') }}" class="cta-button">Fikir Analiz Et →</a>
+                </div>
+            {% endif %}
+        </section>
+    </div>
+{% endblock %}
