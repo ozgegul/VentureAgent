@@ -321,8 +321,8 @@ Bu sprintte paralel yürütülen kollar:
 ## Sprint Board Update
 User story'ler Kanban board'a eklenmiştir. Her user story'nin task'ları kartın içindeki detayda (checklist) yer almaktadır. Sprint boyunca kartlar Yapılacak → Devam Ediyor → Tamamlandı sütunları arasında ilerletilmiştir.
 
-<img width="1576" height="1026" alt="Ekran görüntüsü 2026-08-01 150235" src="https://github.com/user-attachments/assets/4cc6b952-ce0a-4b92-b8c7-4344d487b200" />
 <img width="1578" height="1016" alt="Ekran görüntüsü 2026-08-01 150220" src="https://github.com/user-attachments/assets/4351ba1a-762f-4854-bb28-ced6ffd7014e" />
+<img width="1576" height="1026" alt="Ekran görüntüsü 2026-08-01 150235" src="https://github.com/user-attachments/assets/4cc6b952-ce0a-4b92-b8c7-4344d487b200" />
 <img width="1533" height="1007" alt="Ekran görüntüsü 2026-08-01 150249" src="https://github.com/user-attachments/assets/69ab6613-9799-4342-ba0a-5823248f85bd" />
 
 
@@ -330,7 +330,7 @@ User story'ler Kanban board'a eklenmiştir. Her user story'nin task'ları kartı
 - [Sprint sonunda] kullanıcılar kayıt olup giriş yapabilmekte ve kendi analizlerini görebilmektedir.
 - Rol tabanlı erişim (RBAC) ile admin paneli yalnızca yetkili kullanıcılara açılmaktadır.
 - Arayüze karanlık mod ve birleşik analiz çıktı şablonu eklenmiştir.
-- 
+- Şu an web sitemiz kullanıma hazırdır. Kişiler kayıt olarak hem sohbet ederek çıktılarını elde edebilir hem de geçmiş kayıtlarını görebilir.
 
 <img width="1879" height="926" alt="image" src="https://github.com/user-attachments/assets/27e68d86-fd80-413f-bc03-c17373e8130a" />
 <img width="1889" height="962" alt="image" src="https://github.com/user-attachments/assets/27c15b36-094c-48f6-8bf3-8ad51732eccf" />
@@ -340,15 +340,17 @@ User story'ler Kanban board'a eklenmiştir. Her user story'nin task'ları kartı
 
 
 ## Sprint Review
-- Bu sprintte tamamlanan: [ Kullanıcı kaydı ve girişi, e-posta doğrulama, rol tabanlı erişim (RBAC), kullanıcı hesap paneli, karanlık mod, birleşik analiz şablonu, ana sayfa istatistikleri, agent yanıt kalitesi geliştirmesi].
-- Alınan kararlar: .
-- Sonraki sprint hedefi: .
+- Bu sprintte tamamlanan: Kullanıcı kaydı ve girişi, e-posta doğrulama, rol tabanlı erişim (RBAC), kullanıcı hesap paneli, karanlık mod, birleşik analiz şablonu, ana sayfa istatistikleri ve agent yanıt kalitesi geliştirmesi.
+- Alınan kararlar: Mevcut SQLite veritabanı sıfırdan değiştirilmeden, kullanıcı tablosu eklenerek çok kullanıcılı yapıya geçilmiştir. Admin paneli ve Pro özellikleri için önce kullanıcı/rol altyapısının (RBAC) kurulmasına öncelik verilmiştir. Analiz çıktıları tek bir ortak şablonda toplanarak arayüz tutarlılığı sağlanmıştır.
+- Proje durumu: Bu sprint, bootcamp sürecinin son sprinti olduğundan, VentureAgent artık kayıt/giriş, kullanıcıya özel veri, yetkilendirme ve tüm analiz modülleriyle çalışan bütünleşik bir ürün haline gelmiştir.
+- Olası gelecek adımları: Kanban kartlarının kalıcı saklanması, sohbete ses/görsel (multimodal) desteği, rakip analizine gerçek zamanlı web arama entegrasyonu ve Pro plan için gerçek ödeme entegrasyonu.
+
 
 ## Sprint Retrospective
-- İyi giden:.
-- Neleri iyi yaptık: .
-- Neleri geliştirebiliriz:.
-- Planlanan aksiyonlar: .
+- İyi giden: Önceki sprintlerde kurulan sağlam altyapı sayesinde kullanıcı sistemi ve yetkilendirme gibi kritik özellikler planlandığı gibi ve hızlıca tamamlandı; iyileştirmelerimizi yaptık sprint sonunda uçtan uca çalışan bir ürün ortaya çıktı.
+- Neleri iyi yaptık: Mevcut veritabanını sıfırdan kurmak yerine genişleterek zaman kazandık; işleri kişilere net biçimde dağıttık (Özge: kullanıcı sistemi/hesap paneli, Ayşenur: şablon ve istatistikler, Haticenur: görsel/skor ve hata düzeltmeleri); asenkron daily scrum düzenini proje boyunca sürdürdük.
+- Neleri geliştirebiliriz: Test kapsamı sınırlı kaldı; görev dağılımı zaman zaman dengesizleşti; hata takibi ve dokümantasyonu sürecin başından itibaren daha sistemli tutulabilirdi.
+- Planlanan aksiyonlar: Proje bootcamp kapsamında tamamlandığından yeni bir sprint planlanmamıştır; ürün, son teslim ve sunum için hazır hale getirilmiştir. Gelecekte geliştirmeye devam edilmesi durumunda öncelik, test kapsamının artırılması ve yukarıdaki "olası gelecek adımları" maddeleridir.
 
 ---
 Sprint 3 için Backlog dağıtım mantığı: 
